@@ -147,19 +147,19 @@ h3 {
   display: block;
 }
 h1 {
-  font-size: 1.6rem;
-  font-family: "Segoe UI", "Lucida Grande", Verdana, "Helvetica Neue", Arial, "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
+  font-size: 2rem;
+  font-family: "Microsoft YaHei", "Segoe UI", "Lucida Grande", Verdana, "Helvetica Neue", Arial, "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
 }
 h2 {
-  font-size: 1.4rem;
+  font-size: 1.75rem;
 }
 h3 {
-  font-size: 1.15rem;
+  font-size: 1.25rem;
 }
 h4,
 h5,
 h6 {
-  font-size: 1rem;
+  font-size: 1.2rem;
 }
 a {
   text-decoration: none;
@@ -1336,7 +1336,7 @@ ul > li::before,
 .article-title {
   color: #696969;
   margin-left: 0px;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.3;
   margin-bottom: 20px;
   -webkit-transition: color 0.3s;
@@ -1443,28 +1443,20 @@ ul > li::before,
   list-style: none;
   margin-left: 0;
 }
-.article-entry ul li.task-list::before,
-.article-entry ol li.task-list::before {
-  display: none;
-}
 .article-entry li ul,
 .article-entry li ol {
   margin-left: 30px;
 }
-.article-entry ul > li:before {
-  content: "";
-  background: #dedede;
+.article-entry ul > li {
+  list-style: none;
+  margin: 0;
 }
 .article-entry ul > li:before {
-  display: inline-block;
-  content: "";
-  width: 0.4em;
-  height: 0.4em;
+  content: '\f005';
+  font-family: FontAwesome;
+  font-size: 0.8em;
   margin-right: 0.5em;
-  margin-bottom: 0.11em;
-  border: 1px solid #d3d3d3;
-  border-radius: 50%;
-  background: #d3d3d3;
+  color: #43cd80;
 }
 .article-entry h1 {
   margin-top: 30px;
@@ -1475,7 +1467,7 @@ ul > li::before,
   padding-bottom: 5px;
   border-bottom: 1px solid #ddd;
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
 }
 .article-entry h2:hover {
   color: #88acdb;
@@ -1488,6 +1480,7 @@ ul > li::before,
 .article-entry h3 {
   margin: 0.5em auto;
   color: #438aac;
+  font-size: 1.25rem;
   background: rgba(243,248,253,0.6);
   border: 1px solid #d2e8fa;
   padding: 0.2em 0.6em;
@@ -1505,8 +1498,12 @@ ul > li::before,
 .article-entry h6 {
   margin-top: 20px;
   color: #574c4c;
-  padding-bottom: 5px;
-  border-bottom: 1px solid #ddd;
+  padding-left: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  font-family: Arial;
+  font-size: 1.2rem;
+  border-left: 3px solid #888;
 }
 .article-entry table {
   width: 100%;
@@ -2214,10 +2211,11 @@ aside.comment-bar:active {
   border-radius: 3px;
   -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,0.08);
   box-shadow: 1px 1px 1px rgba(0,0,0,0.08);
-  var: 6;
+  var: 2;
   color: #fff;
   background: rgba(153,204,153,0.75);
-  background: rgba(217,83,79,0.45);
+  color: #dc143c;
+  background: rgba(199,38,79,0.07);
 }
 pre .comment,
 pre .quote,
@@ -2303,67 +2301,48 @@ pre .strong {
 }
 .highlight {
   padding: 0.5em;
-  background: rgba(29,31,33,0.8);
-}
-.highlight::selection,
-.highlight span::selection {
-  background: #373b41;
-}
-.highlight::-moz-selection,
-.highlight span::-moz-selection {
-  background: #373b41;
-}
-.highlight {
-  color: #c5c8c6;
-}
-.highlight .title,
-.highlight .name {
-  color: #f0c674;
+  background: rgba(255,255,255,0.8);
+  color: #000;
 }
 .highlight .comment,
-.highlight .meta,
-.highlight .meta .highlight .keyword {
-  color: #707880;
-}
-.highlight .number,
-.highlight .symbol,
-.highlight .literal,
-.highlight .deletion,
-.highlight .link {
-  color: #c66;
-}
-.highlight .string,
-.highlight .doctag,
-.highlight .addition,
-.highlight .regexp,
-.highlight .selector-attr,
-.highlight .selector-pseudo {
-  color: #b5bd68;
-}
-.highlight .attribute,
-.highlight .code,
-.highlight .selector-id {
-  color: #b294bb;
+.highlight .quote,
+.highlight .variable {
+  color: #008000;
 }
 .highlight .keyword,
 .highlight .selector-tag,
-.highlight .bullet,
-.highlight .tag {
-  color: #81a2be;
-}
-.highlight .subst,
-.highlight .variable,
-.highlight .template-tag,
-.highlight .template-variable {
-  color: #8abeb7;
-}
-.highlight .type,
 .highlight .built_in,
-.highlight .builtin-name,
-.highlight .quote,
+.highlight .name,
+.highlight .tag {
+  color: #00f;
+}
+.highlight .string,
+.highlight .title,
 .highlight .section,
-.highlight .selector-class {
-  color: #de935f;
+.highlight .attribute,
+.highlight .literal,
+.highlight .template-tag,
+.highlight .template-variable,
+.highlight .type,
+.highlight .addition {
+  color: #a31515;
+}
+.highlight .deletion,
+.highlight .selector-attr,
+.highlight .selector-pseudo,
+.highlight .meta {
+  color: #2b91af;
+}
+.highlight .doctag {
+  color: #808080;
+}
+.highlight .attr {
+  color: #f00;
+}
+.highlight .symbol,
+.highlight .bullet,
+.highlight .link {
+  color: #00b0e8;
 }
 .highlight .emphasis {
   font-style: italic;
