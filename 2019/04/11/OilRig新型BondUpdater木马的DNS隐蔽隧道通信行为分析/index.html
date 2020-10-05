@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Sp4n9x" />
+<meta name="renderer" content="webkit">
+<meta name="google" value="notranslate">
+
+
+
+<meta name="description" content="一款使用DNS隐蔽信道通信的木马分析。这是之前在公司实习的时候写的木马分析文章。">
+<meta name="keywords" content="DNS隐蔽信道通信">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析">
+<meta property="og:url" content="http://sp4n9x.github.io/2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/index.html">
+<meta property="og:site_name" content="Sp4n9x&#39;s Blog">
+<meta property="og:description" content="一款使用DNS隐蔽信道通信的木马分析。这是之前在公司实习的时候写的木马分析文章。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/1.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/2.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/3.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/4.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/5.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/6.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/7.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/8.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/9.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/10.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/11.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/19.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/12.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/13.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/14.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/15.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/16.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/17.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/18.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/20.png">
+<meta property="og:updated_time" content="2020-09-12T15:24:59.685Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析">
+<meta name="twitter:description" content="一款使用DNS隐蔽信道通信的木马分析。这是之前在公司实习的时候写的木马分析文章。">
+<meta name="twitter:image" content="http://sp4n9x.github.io/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/1.png">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternative" href="/atom.xml" title="Sp4n9x&#39;s Blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析 | Sp4n9x&#39;s Blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?48aad015dbbeb363812643fd03e528c5";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Sp4n9x</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">留言板</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:sp4n9x@qq.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="https://weibo.com/u/5721141892" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Sp4n9x" title="GitHub"></a>
+                            
+                                <a class="fa 知乎" href="https://www.zhihu.com/people/pangx-cn/columns" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/#/user/home?id=439043183" title="网易云音乐"></a>
+                            
+                            <!--
+                            <div id="music163player">
+                                <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=250 height=86 src="//music.163.com/outchain/player?type=2&id=535693399&auto=1&height=66">
+                                </iframe>
+                            </div>
+                            -->
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adobe-Reader/">Adobe Reader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF/">CTF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DNS隐蔽信道通信/">DNS隐蔽信道通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FileFormat/">FileFormat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Got表覆写/">Got表覆写</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kali/">Kali</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microsoft-Office/">Microsoft Office</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pdf/">Pdf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pwn/">Pwn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ROP/">ROP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rtf/">Rtf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL注入/">SQL注入</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Stack-Overflow/">Stack Overflow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="//moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Sp4n9x&#39;s 简介</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Sp4n9x</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Sp4n9x</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">留言板</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:sp4n9x@qq.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/u/5721141892" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Sp4n9x" title="GitHub"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/people/pangx-cn/columns" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/#/user/home?id=439043183" title="网易云音乐"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/" class="article-date">
+      <time datetime="2019-04-10T16:00:00.000Z" itemprop="datePublished">2019-04-11</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/恶意软件分析/">恶意软件分析</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DNS隐蔽信道通信/">DNS隐蔽信道通信</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+          
+        <blockquote>
+<p>一款使用DNS隐蔽信道通信的木马分析。<br>这是之前在公司实习的时候写的木马分析文章。<br><a id="more"></a></p>
+</blockquote>
+<h2 id="1、概述"><a href="#1、概述" class="headerlink" title="1、概述"></a>1、概述</h2><p>&emsp;&emsp;<code>OilRig</code>是伊朗的<code>APT组织</code>，<code>unit42</code>发现<code>2016年</code>中期以来，此组织一直很活跃，其经常对<code>中东地区</code>的<code>政府机构</code>和<code>企业</code>发动攻击。<code>2018年</code>8月，<code>Unit42</code>发现OilRig针对中东政府组织使用<code>鱼叉式钓鱼邮件</code>投递一个更新版本的<code>BondUpdater</code>。BondUpdater是<code>FireEye</code>于<code>2017年</code>11月中旬首次发现的基于<code>PowerShell</code>的特洛伊木马。</p>
+<p>&emsp;&emsp;BondUpdater木马包含基本的后门功能，允许攻击者<code>上传</code>和<code>下载</code>文件，以及<code>执行命令</code>。与OilRig组织的其它工具一样，BondUpdater使用<code>DNS隧道</code>与<code>C2服务器</code>进行通信。<code>更新版本</code>的BondUpdater木马能够在DNS隧道中使用<code>TXT记录</code>与<code>C2</code>进行通信，<code>老版本</code>的是使用<code>A记录</code>与<code>C2</code>进行通信。</p>
+<p>&emsp;&emsp;近期，我在研究利用<code>DNS隐蔽信道通信</code>的技术，所以找到了这样一个样本来进行分析，想了解一下，使用这种技术通信的恶意软件实现通信的细节，以便我可以研究怎么去检测这种攻击。</p>
+<h2 id="2、样本分析"><a href="#2、样本分析" class="headerlink" title="2、样本分析"></a>2、样本分析</h2><h3 id="2-1、提取关键文件及代码"><a href="#2-1、提取关键文件及代码" class="headerlink" title="2.1、提取关键文件及代码"></a>2.1、提取关键文件及代码</h3><p><strong><code>MD5:</code></strong>52b6e1ef0d079f4c2572705156365c06</p>
+<p>此样本是一个<code>word文档</code>，用Microsoft Word打开一下看看。</p>
+<div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/1.png" width="70%" height="70%" alt=""></div>
+
+<p>&emsp;&emsp;可以看到样本中嵌入了<code>宏代码</code>，但是利用word自带的<code>宏编辑器</code>是看不到宏代码的，我们可以通过<code>oledump</code>或者<code>oletools</code>来提取宏代码。我这里使用<code>oledump</code>来提取宏代码。</p>
+<div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/2.png" width="70%" height="70%" alt=""></div>
+
+<p>可以看到<code>宏代码</code>存在于<code>第7段</code>，我们将其转存为<code>ThisDocument.vb</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python oledump.py -s 7 -v 7cbad6b3f505a199d6766a86b41ed23786bbb99dab9cae6c18936afdc2512f00_doc &gt; ThisDocument.vb</span><br></pre></td></tr></table></figure></p>
+<p><code>ThisDocument.vb</code>内容如下：</p>
+<div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/3.png" width="70%" height="70%" alt=""></div><div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/4.png" width="70%" height="70%" alt=""></div>
+
+<p>&emsp;&emsp;当运行宏之后，会首先执行<code>Document_Open()</code>函数，此函数调用了<code>AAAA()</code>函数，在AAAA()函数中，又调用了<code>HGHG()</code>函数，分别创建了两个文件，<code>AppPool.vbs</code>和<code>AppPool.ps1</code>,并将宏代码中嵌入的<code>vbs代码</code>和<code>powershell代码</code>写入这两个文件。之后通过执行<code>wscript C:\ProgramData\WindowsAppPool\AppPool.vbs</code>运行AppPool.vbs。</p>
+<p>&emsp;&emsp;我们在虚拟机中跑一下，将这两个文件提取出来。</p>
+<p><strong><code>AppPool.vbs</code></strong>内容如下：</p>
+<div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/5.png" width="70%" height="70%" alt=""></div>
+
+<p>&emsp;&emsp;当<code>AppPool.vbs</code>首次执行时，其创建一个每分钟执行的<code>计划任务</code>，使木马文件能够被<code>不断执行</code>。然后通过<code>PowerShell.exe -exec bypass -file C:\ProgramData\WindowsAppPool\AppPool.ps1</code>运行AppPool.ps1。</p>
+<p>&emsp;&emsp;<code>AppPool.vbs</code>后续的执行过程中会判断是否存在<code>&quot;quid&quot;</code>的文件，如果存在，就使用上述<code>powershell</code>脚本运行<code>AppPool.ps1</code>。AppPool.ps1<code>首次运行</code>时会创建<code>quid文件</code>，以避免创建<code>多个计划任务</code>。</p>
+<p><strong><code>AppPool.ps1</code></strong>内容如下：</p>
+<div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/6.png" width="70%" height="70%" alt=""></div>
+
+<p>&emsp;&emsp;原始的<code>AppPool.ps1</code>是经过<code>混淆</code>的，这是经过初步处理的，不过还不是很好懂。主要的操作都是由此<code>powershell</code>代码实现的，通过<code>DNS隐蔽信道</code>与<code>C2</code>进行通信的代码也在其中。</p>
+<h3 id="2-2、分析关键代码"><a href="#2-2、分析关键代码" class="headerlink" title="2.2、分析关键代码"></a>2.2、分析关键代码</h3><blockquote>
+<p><strong><code>AppPool.ps1</code></strong>代码大致流程：<br>1、在目录<code>&quot;C:\ProgramData\WindowsAppPool&quot;</code>创建<code>lock</code>、<code>qiud</code>两个文件。<br>2、以<code>quid中的内容</code>为<code>文件夹名称</code>在目录”C:\ProgramData\WindowsAppPool”创建文件夹，还创建了<code>“files”</code>文件夹。再在<code>第一个文件夹</code>中创建三个目录，<code>“sendbox”</code>、<code>“receivebox”</code>、<code>“done”</code>。<br>3、构造<code>域名</code>，发起包含<code>初始信标</code>的DNS请求，通知C2<code>开始通信</code>。<br>4、创建任务，<code>定期</code>与C2通信。从C2<code>接收命令</code>，将命令<code>写入到文件</code>，并保存在<code>“receivebox”</code>文件夹中。<br>5、对接收到的命令<code>进行解析</code>，<code>执行命令</code>，然后将<code>结果写入文件</code>，保存在<code>“sendbox”</code>文件夹下，以待后续发往C2.<br>6、将<code>命令执行结果</code>传回C2服务器。</p>
+</blockquote>
+<h4 id="2-2-1、创建lock、quid两个文件"><a href="#2-2-1、创建lock、quid两个文件" class="headerlink" title="2.2.1、创建lock、quid两个文件"></a>2.2.1、创建<code>lock</code>、<code>quid</code>两个文件</h4><div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/7.png" width="70%" height="70%" alt=""></div>
+
+<p>&emsp;&emsp;<code>lock文件</code>写入的是当前<code>powershell进程</code>的<code>PID号</code>，powershell脚本会检测<code>当前时间</code>和<code>进程启动时间</code>之差是否<code>超过10分钟</code>，如果超过10分钟就会<code>终止进程</code>并删除<code>lock文件</code>。</p>
+<p>&emsp;&emsp;<code>quid的内容</code>是由<code>GUID</code>(全局唯一标识符)的<code>前八个字符</code>和一个<code>两位的随机整数</code>组成。</p>
+<h4 id="2-2-2、创建files、sendbox、receivebox、done文件夹"><a href="#2-2-2、创建files、sendbox、receivebox、done文件夹" class="headerlink" title="2.2.2、创建files、sendbox、receivebox、done文件夹"></a>2.2.2、创建<code>files</code>、<code>sendbox</code>、<code>receivebox</code>、<code>done</code>文件夹</h4><div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/8.png" width="70%" height="70%" alt=""></div>
+
+<p>&emsp;&emsp;<code>files文件夹</code>的作用未从代码中分析出来。<code>sendbox</code>用于存储<code>将要发送到C2的文件</code>，<code>receivebox</code>用于存储从C2接收到的<code>命令文件</code>，<code>done</code>也是用于存储<code>从C2接收到的文件</code>，以便将来使用。</p>
+<h4 id="2-2-3、受害者发送初始信标，开始与C2通信"><a href="#2-2-3、受害者发送初始信标，开始与C2通信" class="headerlink" title="2.2.3、受害者发送初始信标，开始与C2通信"></a>2.2.3、<code>受害者</code>发送<code>初始信标</code>，开始与C2通信</h4><div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/9.png" width="70%" height="70%" alt=""></div>
+
+<p>参数中的<code>“M”</code>就是<code>操作的类型</code>，是<code>初始信标</code>，表示开始通信，<code>“r”</code>表示按<code>接收数据的格式</code>生成域名。</p>
+<h4 id="2-2-4、定期通信，从C2接收数据。"><a href="#2-2-4、定期通信，从C2接收数据。" class="headerlink" title="2.2.4、定期通信，从C2接收数据。"></a>2.2.4、<code>定期</code>通信，从C2<code>接收数据</code>。</h4><div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/10.png" width="70%" height="70%" alt=""></div>
+
+<p>每隔<code>50毫秒</code>尝试与C2进行<code>通信一次</code>。</p>
+<div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/11.png" width="70%" height="70%" alt=""></div><div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/19.png" width="70%" height="70%" alt=""></div>
+
+<p>&emsp;&emsp;<code>dns_request_TXT()</code>功能为构造<code>DNS请求数据包</code>，发起<code>DNS请求</code>，返回<code>响应包数据</code>。这里的dns_request()函数有<strong><code>两种</code></strong>，分别是发送DNS <code>A记录请求</code>和<code>TXT记录请求</code>，下面在分析通信协议的时候会提到。如果木马发送的是<code>DNS A记录请求</code>，木马会从<code>A记录响应包</code>中的<code>address段(ip)</code>提取数据。如果木马发送的是<code>DNS TXT记录请求</code>，木马会从<code>DNS TXT记录响应包</code>中的<code>TXT段(存储数据)</code>提取数据。</p>
+<div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/12.png" width="70%" height="70%" alt=""></div>
+
+<p>&emsp;&emsp;<code>C2</code>传输数据到<code>木马</code>总共有<strong><code>两种传输方式</code></strong>，<strong><code>一</code></strong>是通过<code>域名响应ip</code>进行传输，这种是通过发送<code>A记录请求</code>。<strong><code>另一种</code></strong>是通过<code>TXT记录</code>进行传输。上面图片中的代码是对<code>DNS TXT记录响应包</code>进行处理的过程。木马会将接收到的<code>TXT数据</code>以<code>“&gt;”</code>分开，<strong><code>左边</code></strong>的作为<code>指令</code>，<strong><code>右边</code></strong>的作为<code>数据</code>。左边的指令决定木马将会如何处理右边的数据。具体的处理规则会在下一节进行描述。从<code>响应包</code>中解析出的<code>指令</code>和<code>数据</code>，会以<code>文件的形式</code>存储在<code>receivebox文件夹</code>下。以待后续处理。</p>
+<h4 id="2-2-5、解析接收到的文件，执行命令"><a href="#2-2-5、解析接收到的文件，执行命令" class="headerlink" title="2.2.5、解析接收到的文件，执行命令"></a>2.2.5、<code>解析</code>接收到的文件，<code>执行命令</code></h4><div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/13.png" width="70%" height="70%" alt=""></div>
+
+<p>&emsp;&emsp;无论是通过<code>A记录</code>进行接收的数据还是通过<code>TXT记录</code>接收的数据，都以<code>文件的形式</code>保存在<code>receivebox文件夹</code>下，文件名以<code>“rcvd”</code>开头。而且会使用相同的<code>文件处理程序</code>。文件处理程序根据<code>文件名</code>的<code>最后一个字符</code>，决定怎么处理以<code>此文件名</code>为名字的<code>文件的内容</code>。</p>
+<h4 id="2-2-6、将执行结果发送回C2服务器"><a href="#2-2-6、将执行结果发送回C2服务器" class="headerlink" title="2.2.6、将执行结果发送回C2服务器"></a>2.2.6、将<code>执行结果</code>发送回<code>C2服务器</code></h4><div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/14.png" width="70%" height="70%" alt=""></div>
+
+<p><code>&quot;s&quot;</code>是以<code>发送数据的格式</code>生成域名，文件的<code>名称</code>和<code>内容</code>是通过<code>域名</code>来进行传送的。<strong><code>$SSE</code></strong>代表数据块，<strong><code>$TTE</code></strong>代表文件名。下节中的数据格式的介绍中会具体提到这些参数。</p>
+<h3 id="2-3、通信协议分析"><a href="#2-3、通信协议分析" class="headerlink" title="2.3、通信协议分析"></a>2.3、通信协议分析</h3><h4 id="2-3-1、数据格式"><a href="#2-3-1、数据格式" class="headerlink" title="2.3.1、数据格式"></a>2.3.1、数据格式</h4><div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/15.png" width="70%" height="70%" alt=""></div>
+
+<p><strong><code>发送数据格式：</code></strong><br>&lt;包含分片号、操作类型、GUID前8字符、随机二位整数的字符串&gt;&lt;序号&gt;<1~7个随机字符>C&lt;分片号偏移&gt;&lt;操作类型偏移&gt;T.&lt;数据块&gt;.&lt;文件名&gt;.&#60;C2域名&#62;</1~7个随机字符></p>
+<p><strong><code>接收数据格式：</code></strong><br>&lt;包含分片号、操作类型、GUID前8字符、随机二位整数的字符串&gt;&lt;序号&gt;<1~7个随机字符>C&lt;分片号偏移&gt;&lt;操作类型偏移&gt;T.&#60;C2域名&#62; </1~7个随机字符></p>
+<div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/16.png" width="70%" height="70%" alt=""></div>
+
+<p>&emsp;&emsp;<code>分片号偏移</code>和<code>操作类型偏移</code>都是相对<code>GUID前8字符和随机2位整数</code>组成的字符串的。<strong><code>接收数据格式</code></strong>的<strong><code>第一部分</code></strong>包含<code>分片号</code>、<code>操作类型</code>、<code>GUID前8字符</code>、<code>随机二位整数</code>的字符串，木马首先生成<code>GUID号</code>，然后取<code>GUID号的前8位</code>与一个<code>2位随机整数</code>相连接形成<code>基础字符串</code>，最后将<code>分片号</code>和<code>操作类型</code>随机<code>插入基础字符串</code>。<strong><code>第二部分</code></strong>是1~7位的随机字符串。<strong><code>第三部分</code></strong>就是<code>C</code>和<code>T</code>以及<code>中间的两个数字</code>，<code>第一个数字</code>为<code>操作类型</code>在<code>基础字符串中的偏移</code>，<code>第二个数字</code>为<code>分片号</code>在<code>基础字符串中的偏移</code>。<strong><code>第四部分</code></strong>就是C2域名。<strong><code>发送数据格式</code></strong>和<strong><code>接收数据格式</code></strong>的区别就是多了<code>数据块</code>和<code>文件名</code>。</p>
+<h4 id="2-3-2、DNS请求中包含的操作类型"><a href="#2-3-2、DNS请求中包含的操作类型" class="headerlink" title="2.3.2、DNS请求中包含的操作类型"></a>2.3.2、DNS请求中包含的操作类型</h4><table>
+<thead>
+<tr>
+<th style="text-align:center">操作类型</th>
+<th style="text-align:center">A/TXT</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">M</td>
+<td style="text-align:center">A/TXT</td>
+<td style="text-align:left">初始信标</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">A</td>
+<td style="text-align:left">提示C2发送文件名</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">A</td>
+<td style="text-align:left">提示C2发送数据</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">A</td>
+<td style="text-align:left">表明木马正在发送数据，可能是命令执行结果，也可能是受害者机器中的文件</td>
+</tr>
+<tr>
+<td style="text-align:center">W</td>
+<td style="text-align:center">TXT</td>
+<td style="text-align:left">提示C2发送文件名</td>
+</tr>
+<tr>
+<td style="text-align:center">D</td>
+<td style="text-align:center">TXT</td>
+<td style="text-align:left">提示C2发送数据</td>
+</tr>
+<tr>
+<td style="text-align:center">P</td>
+<td style="text-align:center">TXT</td>
+<td style="text-align:left">TXT记录方法失败，通知C2切换到A记录方法</td>
+</tr>
+</tbody>
+</table>
+<p>&emsp;&emsp;将此<code>操作类型</code>包含在生成的<code>子域名</code>中，可以通知C2在<code>响应数据包</code>中使用<code>哪种数据格式</code>。例如：如果操作类型是<strong><code>“W”</code></strong>，C2会发送响应包的<code>TXT段</code>以<code>“S000s”</code>为开头的数据，<code>发送的数据</code>会作为<code>文件名</code>。如果操作类型是<strong><code>“0”</code></strong>，C2会将<code>域名响应ip</code>置为<code>“24.125.[\d].[\d]”</code>,使木马将<code>ip地址的后两段</code>作为<code>文件名</code>进行接收。powershell代码中写了<strong><code>两种记录的DNS请求</code></strong>方法。如下所示：<br><strong><code>A记录请求</code></strong>：</p>
+<div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/17.png" width="70%" height="70%" alt=""></div>
+
+<p><strong><code>TXT记录请求</code></strong>：</p>
+<div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/18.png" width="70%" height="70%" alt=""></div>
+
+<h4 id="2-3-3、文件名末尾字符含义"><a href="#2-3-3、文件名末尾字符含义" class="headerlink" title="2.3.3、文件名末尾字符含义"></a>2.3.3、文件名末尾字符含义</h4><table>
+<thead>
+<tr>
+<th style="text-align:center">末尾字符</th>
+<th style="text-align:center">目的</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">执行命令</td>
+<td style="text-align:left">读取文件内容，并当做cmd命令执行。命令的输出保存到以“proc”开头的文件中，并存在“sendbox”文件夹中，等待发送给C2</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">下载文件</td>
+<td style="text-align:left">C2从受害者机器下载文件，木马读取文件内容以获取文件下载路径，将指定的文件复制到“sendbox”文件夹下，以便木马发送到C2</td>
+</tr>
+<tr>
+<td style="text-align:center">其他</td>
+<td style="text-align:center">上传文件</td>
+<td style="text-align:left">C2向受害者机器上传文件，上传的文件将存储在“done”文件夹下，以供将来使用。木马将“200 &lt;&gt; [文件上传路径]”写入“sendbox”文件夹下的文件，以便木马通知C2文件上传成功</td>
+</tr>
+</tbody>
+</table>
+<p>&emsp;&emsp;因为木马从C2<code>接收的数据</code>都是以<code>文件的形式</code>存储在<code>“receivebox”文件夹</code>下的，所以当木马从C2接收完<code>所有的数据</code>后，会执行<code>文件处理程序</code>。文件处理程序会根据<code>以上协议</code>对<code>接收到的数据</code>进行处理。</p>
+<h4 id="2-3-4、原始数据传输过程中的域名解析IP地址及其含义"><a href="#2-3-4、原始数据传输过程中的域名解析IP地址及其含义" class="headerlink" title="2.3.4、原始数据传输过程中的域名解析IP地址及其含义"></a>2.3.4、原始数据传输过程中的域名解析IP地址及其含义</h4><table>
+<thead>
+<tr>
+<th style="text-align:center">IP地址</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">24.125.[\d].[\d]</td>
+<td style="text-align:left">在“receivebox”创建文件名为“rcvd [\d][\d]”的文件,以存储将要处理的数据</td>
+</tr>
+<tr>
+<td style="text-align:center">[\d].[\d].[\d].[\d]</td>
+<td style="text-align:left">前三个[\d]作为数据，第四个[\d]指向数据数组最后一个元素的后一个位置</td>
+</tr>
+<tr>
+<td style="text-align:center">1.2.3.[\d]</td>
+<td style="text-align:left">命令木马将数据写入文件，并开始处理数据</td>
+</tr>
+<tr>
+<td style="text-align:center">11.24.237.110</td>
+<td style="text-align:left">杀死木马进程</td>
+</tr>
+</tbody>
+</table>
+<p>&emsp;&emsp;<code>原始数据传输</code>就是通过<strong><code>A记录</code></strong>传输的，数据是放在<code>DNS响应包</code>的<code>address段的ip地址</code>中的。木马发送包含<strong><code>“0”操作类型</code></strong>的DNS请求，C2就会将<code>响应ip地址</code>设为形如<code>“24.125.[\d].[\d]”</code>的地址，并将<code>文件名</code>填充在里面。木马<code>接收到数据</code>会将其与<code>“rcvd”</code>连接在一起，作为<code>文件名</code>，并修改<code>操作类型为“1”</code>。然后木马开始发送包含<strong><code>“1”操作类型</code></strong>的DNS请求，C2就会将<code>响应ip</code>设为形如<code>“[\d].[\d].[\d].[\d]”</code>的地址，并将<code>数据</code>填充在里面。如果数据<code>发送完了</code>，C2就会将<code>响应ip地址</code>设为形如<code>“1.2.3.[\d]”</code>形式的地址。木马接收到后就会将<code>数据</code>存在以前面<code>接收到的文件名</code>为名的文件中，并保存在<code>“reveiveboc”文件夹</code>下。</p>
+<h4 id="2-3-5、其他域名解析IP地址含义"><a href="#2-3-5、其他域名解析IP地址含义" class="headerlink" title="2.3.5、其他域名解析IP地址含义"></a>2.3.5、其他域名解析IP地址含义</h4><table>
+<thead>
+<tr>
+<th style="text-align:center">IP地址</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">99.250.250.199</td>
+<td style="text-align:left">响应初始信标，通过新型数据传输协议进行传输数据</td>
+</tr>
+<tr>
+<td style="text-align:center">[quid.substring.(0,2)].2.3.[\d]</td>
+<td style="text-align:left">从响应的ip地址中提取数据</td>
+</tr>
+<tr>
+<td style="text-align:center">253.25.42.87</td>
+<td style="text-align:left">杀死木马进程，删除命令执行结果文件</td>
+</tr>
+</tbody>
+</table>
+<p>&emsp;&emsp;这些<code>IP地址</code>是整个通信过程中除去<code>原始数据</code>传输过程中的<code>域名解析IP地址</code>以外的IP地址。<code>“99.250.250.199”</code>用于表示木马想要与C2<code>开始通信</code>。因为有些数据比较长，所以会<code>分片</code>进行传输，<code>“[quid.substring.(0,2)].2.3.[\d]”</code>的最后一段表示目前传输的分片号，用于判断数据是否完整传输完成。</p>
+<div align="left"><img src="/resources/2019/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/20.png" width="70%" height="70%" alt=""></div>
+
+<p>&emsp;&emsp;当<code>文件的字节数</code>大于<code>60字节</code>，就需要<code>多次传输</code>，木马作者设置了<code>数据传输长度</code>的阈值为60。</p>
+<h4 id="2-3-6、新数据传输协议指令含义"><a href="#2-3-6、新数据传输协议指令含义" class="headerlink" title="2.3.6、新数据传输协议指令含义"></a>2.3.6、新数据传输协议指令含义</h4><table>
+<thead>
+<tr>
+<th style="text-align:center">指令</th>
+<th style="text-align:left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">N</td>
+<td style="text-align:left">将下一次DNS请求中的操作类型置为“W”</td>
+</tr>
+<tr>
+<td style="text-align:center">S000s</td>
+<td style="text-align:left">在“receivebox”下，将接收到的数据与“rcvd”连接，作为将要存储接收数据的文件的文件名，并将下一次DNS请求中的操作类型置为“D”</td>
+</tr>
+<tr>
+<td style="text-align:center">S</td>
+<td style="text-align:left">将下一查询操作类型置为“D”,并将从响应包接收到的数据进行base64解码</td>
+</tr>
+<tr>
+<td style="text-align:center">E</td>
+<td style="text-align:left">将执行“S”指令后得到的结果写入执行“S000s”指令后生成的文件中</td>
+</tr>
+<tr>
+<td style="text-align:center">C</td>
+<td style="text-align:left">退出循环，取消通信</td>
+</tr>
+</tbody>
+</table>
+<p>&emsp;&emsp;<code>新数据传输协议</code>就是通过<strong><code>TXT记录</code></strong>进行传输数据。当木马发送<strong><code>操作类型为“W”</code></strong>的TXT记录DNS请求，C2就会回复一个<code>包含TXT数据</code>的响应包，<code>响应包</code>中的<code>TXT字段</code>存储了C2发给木马的<code>数据</code>，数据以<code>“&gt;”</code>号分隔开来。如果<code>“&gt;”左边</code>的字符串为<code>“S000s”</code>，木马就将<code>“&gt;”右边</code>的数据与<code>“rcvd”</code>连接，作为将要<code>存储数据</code>的文件的<code>文件名</code>，然后将操作类型置为“D”。然后发送包含<strong><code>操作类型“D”</code></strong>的TXT记录请求，C2会回复TXT数据中<code>“&gt;”左边</code>为<code>“S”</code>的响应包，木马会将<code>“&gt;”右边</code>的数据进行<code>base64解码</code>，并将下一次请求的操作类型置为“D”,再发送包含<strong><code>操作类型“D”</code></strong>的TXT记录请求，直到数据<code>发送完成</code>，然后C2会回复TXT数据中<code>“&gt;”左边</code>为<code>“E”</code>的响应包，木马会将<code>base64解码后的数据</code>写入执行<code>“S000s”指令</code>后生成的<code>文件名</code>的文件中，然后跳出循环。</p>
+<h2 id="3、总结"><a href="#3、总结" class="headerlink" title="3、总结"></a>3、总结</h2><p>&emsp;&emsp;通过对<code>此样本</code>的分析，我们可以得出一些<code>DNS隐蔽隧道通信</code>的特征，<code>C2</code>和<code>受控主机</code>都要对对方发过来的数据进行解析，会有一套<code>通信协议</code>。<strong><code>C2</code></strong>会向<strong><code>受控主机</code></strong>发送<code>命令</code>，让受控主机执行，<strong><code>受控主机</code></strong>会向<strong><code>C2</code></strong>发送<code>命令执行结果</code>或者是自己的<code>比较机密的文件</code>。数据可以通过<code>A记录</code>进行传送，<code>数据</code>包含在<code>域名中</code>(受控主机向C2发送数据)或者<code>域名解析IP</code>中(C2向受控主机发送数据)。也可以通过<code>TXT记录</code>进行传送，数据包含在<code>响应包</code>中的<code>TXT字段</code>中。</p>
+<p>&emsp;&emsp;由于C2已经挂了，所以无法再通过流量进行更详细的分析，所以有些细节可能分析的不到位。通过对此样本的分析，我们了解了一种实现<code>DNS隐蔽信道通信</code>的方式以及通信所<code>使用的协议</code>。以后遇到这样的恶意软件就可以类比分析。目前很多<code>APT攻击</code>和其他很多的<code>恶意软件</code>都使用DNS隐蔽信道进行通信，所以对DNS隐蔽信道通信进行检测是一件很重要的事。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p>1、<a href="https://unit42.paloaltonetworks.com/unit42-oilrig-uses-updated-bondupdater-target-middle-eastern-government/" target="_blank" rel="noopener">OilRig Uses Updated BONDUPDATER to Target Middle Eastern Government</a></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/">OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Sp4n9x 的个人博客">Sp4n9x</a></p>
+        <p><span>发布时间:</span>2019-04-11, 00:00</p>
+        <p><span>最后更新:</span>2020-09-12, 23:24</p>
+        
+            <p>
+                <span>更新历史:</span><i class="fa fa-github"></i>
+                <a href="https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2019-04-11.OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析.md" title="顺序查看文章各部分修改记录" target = "_blank">Blame</a>,
+                <a href="https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2019-04-11.OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析.md" title="查看文章有关更新记录" target = "_blank">History</a><span class="raw">文本模式:</span><i class="fa fa-file-text-o"></i>
+                <a href="https://raw.githubusercontent.com/Sp4n9x/blog_backup/blob/master/_posts/2019-04-11.OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析.md" title="查看 & 下载文章 Markdown 原始文本" target = "_blank"> .md Raw</a>
+            </p>
+        
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/" title="OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析">http://sp4n9x.github.io/2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://sp4n9x.github.io/2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/　　作者: Sp4n9x" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+    
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2020/04/10/RAR文件格式分析/">
+                    RAR文件格式分析
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/10/26/护网杯2018——WriteUp/">
+                    护网杯2018——WriteUp
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+
+
+
+
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1、概述"><span class="toc-text">1、概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2、样本分析"><span class="toc-text">2、样本分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1、提取关键文件及代码"><span class="toc-text">2.1、提取关键文件及代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2、分析关键代码"><span class="toc-text">2.2、分析关键代码</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1、创建lock、quid两个文件"><span class="toc-text">2.2.1、创建lock、quid两个文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2、创建files、sendbox、receivebox、done文件夹"><span class="toc-text">2.2.2、创建files、sendbox、receivebox、done文件夹</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-3、受害者发送初始信标，开始与C2通信"><span class="toc-text">2.2.3、受害者发送初始信标，开始与C2通信</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-4、定期通信，从C2接收数据。"><span class="toc-text">2.2.4、定期通信，从C2接收数据。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-5、解析接收到的文件，执行命令"><span class="toc-text">2.2.5、解析接收到的文件，执行命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-6、将执行结果发送回C2服务器"><span class="toc-text">2.2.6、将执行结果发送回C2服务器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3、通信协议分析"><span class="toc-text">2.3、通信协议分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-1、数据格式"><span class="toc-text">2.3.1、数据格式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-2、DNS请求中包含的操作类型"><span class="toc-text">2.3.2、DNS请求中包含的操作类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-3、文件名末尾字符含义"><span class="toc-text">2.3.3、文件名末尾字符含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-4、原始数据传输过程中的域名解析IP地址及其含义"><span class="toc-text">2.3.4、原始数据传输过程中的域名解析IP地址及其含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-5、其他域名解析IP地址含义"><span class="toc-text">2.3.5、其他域名解析IP地址含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-6、新数据传输协议指令含义"><span class="toc-text">2.3.6、新数据传输协议指令含义</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3、总结"><span class="toc-text">3、总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接"><span class="toc-text">参考链接</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-6 i,
+        .toc-level-6 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+    <div class="share">
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析　| Sp4n9x's Blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    </div>
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function () {
+            this.page.url = 'http://sp4n9x.github.io/2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/';
+            this.page.identifier = '2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/';
+        };
+        var loadComment = function() {
+            var d = document, s = d.createElement('script');
+            s.src = '//Sp4n9x.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+<script id="dsq-count-scr" src="//Sp4n9x.disqus.com/count.js" async></script>
+<span class="disqus-comment-count" data-disqus-identifier="2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/"></span>
+<span class="disqus-comment-count" data-disqus-url="http://sp4n9x.github.io/2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/"></span>
+<script>
+    $(".disqus-comment-count").hide();
+    var $disqusCount = $(".disqus-comment-count");
+    $disqusCount.bind("DOMNodeInserted", function(e) {
+        $(".count-comment").text(
+            $(this).text().replace(/[^0-9]/ig,"")
+        )
+        DISQUSWIDGETS.getCount({reset: true});
+    })
+</script>
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2020/04/10/RAR文件格式分析/" title="上一篇: RAR文件格式分析">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/10/26/护网杯2018——WriteUp/" title="下一篇: 护网杯2018——WriteUp">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/08/15/ret2_dl_runtime_resolve详解/">ret2_dl_runtime_resolve详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/19/RCTF2015——WriteUp(Pwn)/">RCTF2015——WriteUp(Pwn)</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/05/ZCTF2016——WriteUp(Pwn)/">ZCTF2016——WriteUp(Pwn)</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/08/ZIP文件格式分析/">ZIP文件格式分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/10/RAR文件格式分析/">RAR文件格式分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/">OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/26/护网杯2018——WriteUp/">护网杯2018——WriteUp</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/06/CVE-2010-3333复现与分析/">CVE-2010-3333复现与分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/01/CVE-2010-2883复现与分析/">CVE-2010-2883复现与分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/27/redhat2018—writeup/">redhat2018—writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/11/一步一步学ROP之Linux_x64篇-蒸米/">一步一步学ROP之Linux_x64篇-蒸米</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/10/一步一步学ROP之Linux_x86篇-蒸米/">一步一步学ROP之Linux_x86篇-蒸米</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/08/Kali2018-搜狗输入法安装/">Kali2018-搜狗输入法安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/05/Pwn环境搭建-Ubuntu16.04/">Pwn环境搭建——Ubuntu16.04</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/23/pwnable.kr/">pwnable.kr</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/27/MySQL宽字节注入/">MySQL宽字节注入</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/15/实验吧Wirteup合集/">实验吧WriteUp合集</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018-2020 Sp4n9x
+            </div>
+            <div class="footer-right">
+                <span> Sp4n9x's Blog <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+    </div>
+</footer>
+    </div>
+    
+    <script src="/js/GithubRepoWidget.js"></script>
+
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 10;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+             github: ".github-widget a", 
+            
+             post: ".article-entry a[href]", 
+             tags: ".article-tag a", 
+             categories: ".article-category a, a.tag-list-link", 
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+    <!-- 点击爱心效果 -->
+    <script src="/js/love.js"></script>
+  </div>
+</body>
+</html>

