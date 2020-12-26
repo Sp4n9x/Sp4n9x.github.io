@@ -21,11 +21,11 @@
             
             <tag> Windows </tag>
             
+            <tag> FileFormat </tag>
+            
             <tag> Microsoft Office </tag>
             
             <tag> Rtf </tag>
-            
-            <tag> FileFormat </tag>
             
         </tags>
       
@@ -193,11 +193,11 @@
             
             <tag> Windows </tag>
             
-            <tag> FileFormat </tag>
-            
             <tag> Adobe Reader </tag>
             
             <tag> Pdf </tag>
+            
+            <tag> FileFormat </tag>
             
         </tags>
       
