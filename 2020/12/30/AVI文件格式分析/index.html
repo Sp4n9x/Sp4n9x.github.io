@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Sp4n9x" />
+<meta name="renderer" content="webkit">
+<meta name="google" value="notranslate">
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;——当你的才华还配不上你的野心时，请静下来好好努力！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AVI文件格式分析">
+<meta property="og:url" content="http://sp4n9x.github.io/2020/12/30/AVI文件格式分析/index.html">
+<meta property="og:site_name" content="Sp4n9x&#39;s Blog">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;——当你的才华还配不上你的野心时，请静下来好好努力！">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2020/AVI_Format/Super%20Index%20Chunk.png">
+<meta property="og:image" content="http://sp4n9x.github.io/resources/2020/AVI_Format/idx1%20Chunk.png">
+<meta property="og:updated_time" content="2021-01-05T07:21:33.998Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AVI文件格式分析">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;——当你的才华还配不上你的野心时，请静下来好好努力！">
+<meta name="twitter:image" content="http://sp4n9x.github.io/resources/2020/AVI_Format/Super%20Index%20Chunk.png">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternative" href="/atom.xml" title="Sp4n9x&#39;s Blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>AVI文件格式分析 | Sp4n9x&#39;s Blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?48aad015dbbeb363812643fd03e528c5";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Sp4n9x</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">留言板</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:sp4n9x@qq.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="https://weibo.com/u/5721141892" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Sp4n9x" title="GitHub"></a>
+                            
+                                <a class="fa 知乎" href="https://www.zhihu.com/people/pangx-cn/columns" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" href="http://music.163.com/#/user/home?id=439043183" title="网易云音乐"></a>
+                            
+                            <!--
+                            <div id="music163player">
+                                <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=250 height=86 src="//music.163.com/outchain/player?type=2&id=535693399&auto=1&height=66">
+                                </iframe>
+                            </div>
+                            -->
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AVI/">AVI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adobe-Reader/">Adobe Reader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF/">CTF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cinepak/">Cinepak</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DNS隐蔽信道通信/">DNS隐蔽信道通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FileFormat/">FileFormat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Got表覆写/">Got表覆写</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heap-Overflow/">Heap Overflow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kali/">Kali</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microsoft-Office/">Microsoft Office</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pdf/">Pdf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pwn/">Pwn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ROP/">ROP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rtf/">Rtf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SEH/">SEH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL注入/">SQL注入</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Stack-Overflow/">Stack Overflow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="//moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Sp4n9x&#39;s 简介</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Sp4n9x</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Sp4n9x</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">留言板</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:sp4n9x@qq.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="https://weibo.com/u/5721141892" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Sp4n9x" title="GitHub"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://www.zhihu.com/people/pangx-cn/columns" title="知乎"></a>
+                            
+                                <a class="fa 网易云音乐" target="_blank" href="http://music.163.com/#/user/home?id=439043183" title="网易云音乐"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-AVI文件格式分析" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2020/12/30/AVI文件格式分析/" class="article-date">
+      <time datetime="2020-12-29T16:00:00.000Z" itemprop="datePublished">2020-12-30</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      AVI文件格式分析
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/FileFormat/">FileFormat</a>
+    </div>
+
+
+        
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+          
+        <blockquote>
+<p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;——当你的才华还配不上你的野心时，请静下来好好努力！<br><a id="more"></a></p>
+</blockquote>
+<h2 id="1、AVI简介"><a href="#1、AVI简介" class="headerlink" title="1、AVI简介"></a>1、AVI简介</h2><h3 id="1-1、AVI基本概念"><a href="#1-1、AVI基本概念" class="headerlink" title="1.1、AVI基本概念"></a>1.1、AVI基本概念</h3><p>&emsp;&emsp;<code>AVI</code>是音频视频交错(<code>Audio Video Interleaved</code>)的缩写，它是<code>Microsoft</code>于1992年11月开发的一种符合<code>RIFF文件规范</code>的多媒体容器格式，作为其<code>Windows视频软件</code>的一部分。<code>AVI文件</code>可以在<code>文件容器</code>中同时包含<code>音频</code>和<code>视频</code>数据，该文件容器允许<code>同步播放</code>音频和视频。</p>
+<p>&emsp;&emsp;许多<code>AVI文件</code>使用1996年2月由<code>Matrox OpenDML组</code>开发的文件格式扩展名。这些文件受<code>Microsoft</code>支持，并且被非正式地称为<code>“AVI 2.0”</code>。2010年，<code>美国政府</code>的<code>国家档案</code>和<code>记录管理局</code>将AVI定义为<code>官方文件格式</code>，用于保存<code>数字视频</code>。</p>
+<p>&emsp;&emsp;<code>AVI</code>文件格式是<code>Resource Interchange File Format</code>(RIFF:资源交换文件格式)的<code>子格式</code>。<code>RIFF</code>是一种<code>通用文件容器格式</code>，用于将<code>数据</code>存储在<code>带标签</code>的块中。它主要用于存储<code>多媒体</code>，例如<code>声音</code>和<code>视频</code>，尽管它也可以用于存储<code>任意数据</code>。<code>RIFF文件</code>所包含的<code>数据类型</code>由该文件的<code>扩展名</code>来标识，能以<code>RIFF文件</code>存储的数据包括：<code>音频视频交错格式数据</code>(.AVI)、<code>波形格式数据</code>(.WAV)、<code>位图格式数据</code>(.RDI)、<code>MIDI格式数据</code>(.RMI)、<code>调色板格式数据</code>(.PAL)、<code>多媒体电影格式数据</code>(.RMN)、<code>动画光标格式数据</code>(.ANI)、<code>其它RIFF文件</code>(.BND)。</p>
+<p>可以查看<strong><code>AVI文件结构</code></strong>的软件：<br>1、<a href="https://www.menasoft.com/blog/?p=34" target="_blank" rel="noopener">RIFF File Viewer - RIFFPad v0.73 by Menasoft</a><br>2、<a href="https://download.csdn.net/download/sailingthink/4460808" target="_blank" rel="noopener">AtomicBrowser Version 2.0, Written by David Mojdehi</a></p>
+<h3 id="1-2、AVI文件类型"><a href="#1-2、AVI文件类型" class="headerlink" title="1.2、AVI文件类型"></a>1.2、AVI文件类型</h3><p>&emsp;&emsp;基本上，有<code>3种类型</code>的AVI文件：</p>
+<blockquote>
+<ul>
+<li><strong><code>AVI1.0</code></strong>: 原始的，<code>旧的</code>AVI文件。</li>
+<li><strong><code>Open-DML(AVI2.0)</code></strong>: AVI文件格式的<code>扩展</code>，版本1.02已在1996年2月28日推出。最重要的<code>改进</code>是：<ul>
+<li>对<code>文件大小</code>几乎没有限制(例如，比NTFS所允许的要多得多)</li>
+<li>减少了33%的<code>开销</code></li>
+</ul>
+</li>
+<li><strong><code>Hybride-Files</code></strong>(混合文件): 出于<code>兼容性</code>原因，<code>Open-DML文件</code>包含附加的<code>旧版索引</code>。这不是那些文件的<code>“官方”</code>词汇，但它很好地描述了那种<code>文件类型</code>。仅包含<code>一个RIFF列表</code>的Hybride文件可以被视为<code>任一文件类型</code>。</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;<code>AVI 1.0</code>是最基本的格式，由于<code>索引地址</code>与<code>大小</code>用<code>4字节</code>表示，所以最大支持<code>4G容量</code>，而且与<code>文件系统</code>类型有关，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-- Video for Windows (AVI 1.0)</span><br><span class="line">- FAT (FAT16): 4GB (2GB practical, safe)</span><br><span class="line">- FAT32: 4GB (2GB practical, safe)</span><br><span class="line">- NTFS: 4GB (2GB practical, safe)</span><br><span class="line"></span><br><span class="line">为了安全一般限制为2G。</span><br></pre></td></tr></table></figure></p>
+<h3 id="1-3、基本数据结构"><a href="#1-3、基本数据结构" class="headerlink" title="1.3、基本数据结构"></a>1.3、基本数据结构</h3><h4 id="1-3-1、RIFF文件的基本数据结构"><a href="#1-3-1、RIFF文件的基本数据结构" class="headerlink" title="1.3.1、RIFF文件的基本数据结构"></a>1.3.1、RIFF文件的基本数据结构</h4><p>&emsp;&emsp;<strong><code>Chunk</code></strong>是组成RIFF文件的<code>基本单元</code>，其<code>基本结构</code>如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">chunk</span>&#123;</span></span><br><span class="line">    u32 id;         <span class="comment">//块标志</span></span><br><span class="line">    u32 size;       <span class="comment">//块大小</span></span><br><span class="line">    u8 data[size];   <span class="comment">//块内容</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><strong><code>id</code></strong>: 此块的<code>标识符</code>，由<code>4个ASCII字符</code>组成的<code>FourCC</code>数据格式标识符，用以识别块中所<code>包含的数据</code>。如：<code>“RIFF”</code>、<code>“LIST”</code>、<code>“AVI ”</code>、<code>“WAVE”</code>等等。</li>
+<li><strong><code>size</code></strong>: 存储在<code>data域</code>中的<code>数据的长度</code>，<code>id</code>和<code>size</code>域的大小<code>不包括</code>在该值内。</li>
+<li><strong><code>data</code></strong>: 块内容，具有<code>前一个字段</code>中给定大小的数据。其中的数据是<code>以字(Word)为单位</code>排列的，如果该数据长度为<code>奇数</code>，则在最后添加一个<code>空字节(Null)</code>。</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;两个块标识符<code>“RIFF”</code>和<code>“LIST”</code>引入了可以<code>包含子块</code>的块。而其它块<code>仅能含有数据</code>。<code>“RIFF”</code>和<code>“LIST”</code>类型的<code>Chunk结构</code>如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">chunk</span>&#123;</span></span><br><span class="line">    u32 id;                 <span class="comment">//块标志</span></span><br><span class="line">    u32 size;               <span class="comment">//块大小</span></span><br><span class="line">    u32 type;               <span class="comment">//块类型</span></span><br><span class="line">    u8 restdata[size<span class="number">-4</span>];    <span class="comment">//data中除type所占的4个字节后剩余的数据</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;可以看出<code>“RIFF”</code>和<code>“LIST”</code>也是<code>Chunk</code>，只是它的<code>data</code>由<code>type</code>和<code>restdata</code>两部分组成。</p>
+<blockquote>
+<ul>
+<li><strong><code>type</code></strong>: 由<code>4个ASCII字符</code>组成的<code>FourCC</code>数据格式标识符，代表<code>“RIFF”</code>文件的类型，如：<code>“WAVE”</code>、<code>“AVI ”</code>；或者是<code>“LIST”</code>块的类型，如AVI文件中的列表<code>“hdrl”</code>、<code>“movi”</code>。</li>
+<li><strong><code>restdata</code></strong>: <code>data</code>中除<code>type</code>所占的4个字节后<code>剩余的数据</code>，包括块内容，包含若干<code>“Chunk”</code>和<code>“LIST”</code>。</li>
+</ul>
+</blockquote>
+<p><strong><code>FourCC:</code></strong><br>&emsp;&emsp;<code>FourCC</code>(“four-character code”)是<code>四个字节</code>(通常为<code>ASCII</code>)的序列，用于<code>唯一标识数据格式</code>。在<code>RIFF</code>文件格式中，<code>FourCC</code>非常普遍,<code>struct chunk</code>中的<code>id</code>成员，<code>“RIFF”</code>和<code>“LIST”</code>的<code>type</code>成员，<code>起始标识</code>等信息都是用<code>FourCC</code>表示的。<code>FourCC</code>一般是四个字符，如<code>&#39;abcd&#39;</code>这样的形式，也可以<code>三个字符</code>包含一个<code>空格</code>，如<code>&#39;abc &#39;</code>这样的形式。<code>AVI</code>文件格式使用<code>FourCC</code>编码标识<code>流类型</code>，<code>数据块</code>，<code>索引条目</code>和其他信息。</p>
+<h4 id="1-3-2、AVI文件的基本数据结构"><a href="#1-3-2、AVI文件的基本数据结构" class="headerlink" title="1.3.2、AVI文件的基本数据结构"></a>1.3.2、AVI文件的基本数据结构</h4><p>&emsp;&emsp;在<code>AVI文件</code>中，有两种基本单元<code>“Chunks”</code>和<code>“Lists”</code>，与<code>RIFF文件</code>中的<code>基本单元</code>差别不大，就是<code>字段名称</code>稍有不同，其结构如下：</p>
+<p><strong><code>Chunks:</code></strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    DWORD dwFourCC;</span><br><span class="line">    DWORD dwSize;       <span class="comment">//data</span></span><br><span class="line">    BYTE data[dwSize];  <span class="comment">//contains headers or video/audio data</span></span><br><span class="line">&#125;CHUNK;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<ul>
+<li><strong><code>dwFourCC</code></strong>: 标识本<code>“CHUNK”</code>所包含的<code>数据类型</code>，如：<code>“avih”</code>(AVI Header)、<code>“strh”</code>(Stream Header)、<code>“strf”</code>(Stream Format)、<code>“00dc”</code>(编号为00的视频数据块)。</li>
+<li><strong><code>dwSize</code></strong>: 本CHUNK所包含<code>数据的大小</code>，不包括<code>dwFourCC</code>和<code>dwSize</code>所占的8个字节。</li>
+<li><strong><code>data</code></strong>: 本CHUNK所包含的<code>数据</code>，大小由上一个字段<code>dwSize</code>指定。可以为<code>Header</code>、<code>视频</code>/<code>音频</code>数据。</li>
+</ul>
+</blockquote>
+<p><strong><code>Lists:</code></strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    DWORD dwList;</span><br><span class="line">    DWORD dwSize;         <span class="comment">//dwFourCC+data</span></span><br><span class="line">    DWORD dwFourCC; </span><br><span class="line">    BYTE data[dwSize<span class="number">-4</span>];  <span class="comment">//contains Lists and Chunks</span></span><br><span class="line">&#125;LIST;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<ul>
+<li><strong><code>dwList</code></strong>: LIST的<code>类型</code>，其值可以为<code>“RIFF”</code>(“RIFF-List”)或<code>“LIST”</code>(“List”)。</li>
+<li><strong><code>dwSize</code></strong>: 本LIST所包含<code>数据的大小</code>，嵌套<code>List</code>和<code>Chunk</code>的<code>数据大小之和</code>。包含<code>dwFourCC</code>和<code>data</code>。</li>
+<li><strong><code>dwFourCC</code></strong>: 由<code>4个ASCII字符</code>组成的<code>FourCC</code>数据格式标识符，代表<code>“RIFF”</code>文件的类型，如：<code>“WAVE”</code>、<code>“AVI ”</code>；或者是<code>“LIST”</code>块的类型，如<code>AVI文件</code>中的列表<code>“hdrl”</code>、<code>“movi”</code>。</li>
+<li><strong><code>data</code></strong>: 本LIST所包含的<code>数据</code>，其大小为<code>dwSize-4</code>。<code>数据内容</code>可以是若干个<code>List</code>和<code>Chunk</code>。</li>
+</ul>
+</blockquote>
+<h2 id="2、AVI文件结构"><a href="#2、AVI文件结构" class="headerlink" title="2、AVI文件结构"></a>2、AVI文件结构</h2><h3 id="2-1、AVI文件整体布局"><a href="#2-1、AVI文件整体布局" class="headerlink" title="2.1、AVI文件整体布局"></a>2.1、AVI文件整体布局</h3><p>&emsp;&emsp;我们用如下的方式来表示一个<code>LIST块</code>(dwSize省略):</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LIST (dwFourCC (data))</span><br><span class="line">LIST ('hdrl' ...)</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;<code>可选块</code>我们用<code>“[]”</code>括起来：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">['idx1' (&lt;AVI Index&gt;) ]</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;<code>AVI文件格式</code>将文件的数据分为一个一个<code>“Chunk”</code>，每个<code>“Chunk”</code>都由<code>FourCC</code>标签标识。<code>AVI文件格式</code>采用<code>RIFF格式</code>的文件中<code>单个“Chunk”</code>的形式，然后细分为<code>两个必须的“List Chunk”</code>(“hdrl”和“movi”)和<code>一个可选的“Index Chunk”</code>(“idx1”)。下面是一个<code>简化的</code>AVI文件布局：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">RIFF ('AVI '</span><br><span class="line">      LIST ('hdrl' ... )</span><br><span class="line">      LIST ('movi' ... )</span><br><span class="line">      ['idx1' (&lt;AVI Index&gt;) ]</span><br><span class="line">     )</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;<code>“hdrl”列表</code>定义了本AVI文件所保存的<code>数据的格式</code>，是<code>第一个</code>必须的<code>LIST块</code>。<code>“movi”列表</code>保存的是AVI的<code>音频/视频序列数据</code>，是<code>第二个</code>必须的<code>LIST块</code>。<code>“idx1”</code>为<code>“movi”列表</code>中包含的<code>音频/视频序列数据块</code>在<code>文件中位置</code>的<code>列表</code>。</p>
+<p>&emsp;&emsp;AVI文件的<code>实际数据</code>中，使用了<code>列表(List)</code>和<code>块(Chunk)</code>的形式来组织。<code>列表(List)</code>可以嵌套<code>列表(List)</code>和<code>块(Chunk)</code>。<code>整个AVI文件</code>可以看成一个<code>List数据块</code>，其<code>dwList</code>为<code>“RIFF”</code>，称为<code>“RIFF-List”</code>块，其<code>dwFourCC</code>为<code>“AVI”</code>。一个AVI文件中只允许存在<code>一个RIFF块</code>。RIFF块中包含<code>一系列的子块</code>，其中有一种子块的<code>dwList</code>为<code>“LIST”</code>，称为<code>LIST块</code>，<code>LIST块</code>中可以再包含<code>一系列的子块</code>，但除了<code>LIST块</code>外的<code>其他所有的子块</code>都不能再包含子块。</p>
+<p>&emsp;&emsp;<code>“hdrl”</code>和<code>“movi”</code>LIST块使用<code>子块</code>作为它们的<code>数据</code>，我们将其展开，以下示例显示了一个较为<code>完整的</code>AVI文件的布局：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">RIFF ('AVI '</span><br><span class="line">      LIST ('hdrl'</span><br><span class="line">            'avih'(&lt;Main AVI Header&gt;)</span><br><span class="line">            LIST ('strl'</span><br><span class="line">                  'strh'(&lt;Stream header&gt;)</span><br><span class="line">                  'strf'(&lt;Stream format&gt;)</span><br><span class="line">                  [ 'strd'(&lt;Additional header data&gt;) ]</span><br><span class="line">                  [ 'strn'(&lt;Stream name&gt;) ]</span><br><span class="line">                  ...</span><br><span class="line">                 )</span><br><span class="line">             ...</span><br><span class="line">           )</span><br><span class="line">      LIST ('INFO' INAM("Two Trees"Z)</span><br><span class="line">                   ICMT(<span class="string">"A picture for the opening screen"</span>Z) </span><br><span class="line">           )</span><br><span class="line">      LIST ('movi'</span><br><span class="line">            &#123;SubChunk | LIST ('rec '</span><br><span class="line">                              SubChunk1</span><br><span class="line">                              SubChunk2</span><br><span class="line">                              ...</span><br><span class="line">                             )</span><br><span class="line">               ...</span><br><span class="line">            &#125;</span><br><span class="line">            ...</span><br><span class="line">           )</span><br><span class="line">      ['idx1' (&lt;AVI Index&gt;) ]</span><br><span class="line">     )</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;每个<code>AVI文件</code>都具有以下<code>布局</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RIFF AVI    //强制</span><br><span class="line">&#123;RIFF AVIX&#125; //仅适用于Open-DML文件</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将其中<code>dwFourCC =&#39;AVI&#39;</code>的RIFF-List称为<code>&#39;RIFF-AVI-List&#39;</code>，将其中<code>dwFourCC =&#39;AVIX&#39;</code>的RIFF-List称为<code>&#39;RIFF-AVIX-List&#39;</code>。</p>
+<p>&emsp;&emsp;与<code>uint32</code>(4字节)的<code>表示范围</code>不同，这些列表的<code>大小限制</code>不是<code>4GB</code>，而是</p>
+<blockquote>
+<ul>
+<li>对于<strong><code>AVI 1.0</code></strong>：大小(<code>RIFF-AVI</code>) &lt; <code>2GB</code></li>
+<li>对于<strong><code>Open-DML</code></strong>：<ul>
+<li>size(<code>RIFF-AVI</code>) &lt; <code>1GB</code> (假设某些混合应用程序(例如VirtualDub！)为2GB)</li>
+<li>size(<code>RIFF-AVIX</code>) &lt; <code>2GB</code></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;由于<code>Windows XP</code>会在未找到<code>旧索引</code>的情况下坚持读取<code>整个第一个RIFF AVI列表</code>，并且由于<code>旧索引</code>会导致<code>开销</code>，因此建议创建<code>尽可能小</code>的<code>RIFF-AVI-List</code>。</p>
+<h3 id="2-2、hdrl-List-Headerlist"><a href="#2-2、hdrl-List-Headerlist" class="headerlink" title="2.2、hdrl List(Headerlist)"></a>2.2、hdrl List(Headerlist)</h3><p>&emsp;&emsp;<strong><code>“hdrl List”</code></strong>是AVI文件的<code>文件头</code>，其中包含的数据是<code>有关视频的MetaData</code>(元数据)，例如其<code>宽度</code>、<code>高度</code>和<code>帧频</code>。<code>“hdrl List”</code>块包含<code>两种子块</code>，一种是<code>dwFourCC</code>为<code>“avih”</code>的<code>Chunk</code>，另一种是<code>dwFourCC</code>为<code>“strl”</code>的<code>List</code>。</p>
+<h4 id="2-2-1、avih-Chunk-AVI-Header"><a href="#2-2-1、avih-Chunk-AVI-Header" class="headerlink" title="2.2.1、avih Chunk(AVI Header)"></a>2.2.1、avih Chunk(AVI Header)</h4><p>&emsp;&emsp;<strong><code>“avih”</code></strong>块用于存储AVI文件的<code>全局信息</code>，如：<code>流的数量</code>、视频的<code>宽度</code>和<code>高度</code>等。此结构定义如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    DWORD dwFourCC;     <span class="comment">// 必须为'avih'</span></span><br><span class="line">    DWORD dwSize;       <span class="comment">// 本数据结构的大小，不包括最初的8个字节(dwFourCC和dwSize两个字段)</span></span><br><span class="line">    BYTE data[dwSize];  <span class="comment">// AVIMainHeader struct</span></span><br><span class="line">&#125;CHUNK;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span>                </span><br><span class="line">    DWORD dwMicroSecPerFrame;       <span class="comment">// 每帧的持续时间(以毫秒ms为单位)，定义avi的显示速率</span></span><br><span class="line">    DWORD dwMaxBytesPerSec;         <span class="comment">// 最大的数据传输率</span></span><br><span class="line">    DWORD dwPaddingGranularity;     <span class="comment">// 数据填充的粒度</span></span><br><span class="line">    DWORD dwFlages;                 <span class="comment">// AVI文件的特殊属性，如是否包含索引块，音视频数据是否交叉存储</span></span><br><span class="line">    DWORD dwTotalFrame;             <span class="comment">// 文件中的总帧数</span></span><br><span class="line">    DWORD dwInitialFrames;          <span class="comment">// 说明在开始播放前需要多少桢</span></span><br><span class="line">    DWORD dwStreams;                <span class="comment">// 文件中包含的数据流个数</span></span><br><span class="line">    DWORD dwSuggestedBufferSize;    <span class="comment">// 建议使用的缓冲区的大小，</span></span><br><span class="line">                                    <span class="comment">// 通常为存储一桢图像以及同步声音所需要的数据之和</span></span><br><span class="line">    DWORD dwWidth;                  <span class="comment">// 图像宽</span></span><br><span class="line">    DWORD dwHeight;                 <span class="comment">// 图像高</span></span><br><span class="line">    DWORD dwReserved[<span class="number">4</span>];            <span class="comment">// 保留值</span></span><br><span class="line">&#125; AVIMainHeader;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<ul>
+<li><strong><code>dwFourCC</code></strong>: 标识此块为<code>“avih”</code>，用于存储<code>AVIMainHeader</code>结构体数据。</li>
+<li><strong><code>dwSize</code></strong>: <code>AVIMainHeader</code>结构体的<code>字节数</code>。</li>
+<li><strong><code>dwMicroSecPerFrame</code></strong>: 一个<code>视频帧</code>的<code>持续时间</code>(以<code>微秒</code>为单位)。可以<code>忽略</code>此值(请参阅Stream Header)，但任何AVI编写器均应正确写入该值。<ul>
+<li><strong><code>重要说明</code></strong>：某些AVI修改软件，例如<code>AVIFrate</code>，会将<code>帧速率值</code>写入<code>Stream Header</code>，而不是<code>dwMicroSecPerFrame</code>。 因此，dwMicroSecPerFrame<code>不应该</code>被认为是<code>可靠的</code>！</li>
+</ul>
+</li>
+<li><strong><code>dwMaxBytesPerSec</code></strong>: 指定文件的大致<code>最大数据速率</code>。这个值表示系统<code>每秒必须处理的字节数</code>，以显示AVI序列，该序列由<code>Main Header</code>和<code>Stream Header</code>块中包含的<code>其他参数</code>指定。该值也不重要。其可靠性不应被高估。</li>
+<li><strong><code>dwPaddingGranularity</code></strong>: 指定数据<code>对齐方式</code>(以<code>字节</code>为单位)。将<code>数据</code>填充为<code>该值的倍数</code>。</li>
+<li><strong><code>dwFlages</code></strong>: 见下文。</li>
+<li><strong><code>dwTotalFrame</code></strong>: 指定文件中<code>数据帧的总数</code>。包含在<code>RIFF-AVI</code>列表中的<code>视频帧数</code>(如果存在<code>RIFF-AVIX-List</code>，则不应包含<code>整个文件</code>中的<code>帧总数</code>。某些声称<code>处理AVI文件的工具</code>甚至假定了这一点，但它显然违反了<code>Open-DML</code>文件格式规范。此类应用程序<code>已损坏</code>。)。由于某些AVI文件muxer在此处写入了错误的值，因此不应认为此值是可靠的。</li>
+<li><strong><code>dwInitialFrames</code></strong>: 为<code>交错格式</code>指定<code>初始帧数</code>(<code>非交错格式</code>应该指定为<code>0</code>)。如果要创建<code>交错文件</code>，请在该成员中的AVI序列的<code>初始帧</code>之前指定文件中的<code>帧数</code>。要为<code>音频驱动程序</code>提供足够的音频以供使用，必须将<code>交错文件</code>中的<code>音频数据</code>相对于<code>视频数据</code>倾斜。通常，<code>音频数据</code>应<code>向前</code>移动足够的帧，以允许大约<code>0.75秒</code>的<code>音频数据</code>被<code>预加载</code>。<code>dwInitialRecords</code>成员应设置为<code>音频向前的帧数</code>。还要在<code>音频流头</code>中为<code>AVIStreamHeader</code>结构的<code>dwInitialFrames</code>成员设置相同的值。</li>
+<li><strong><code>dwStreams</code></strong>: 文件中包含的<code>数据流个数</code>。例如，一个带有<code>音频</code>和<code>视频</code>的文件有<code>两个流</code>。</li>
+<li><strong><code>dwSuggestedBufferSize</code></strong>: 指定用于<code>读取文件的建议缓冲区大小</code>。通常，此大小应足够大以包含文件中<code>最大的块</code>。如果设置为<code>零</code>，或者设置得<code>太小</code>，则播放软件将不得不在<code>播放过程</code>中<code>重新分配内存</code>，这会<code>降低性能</code>。对于<code>交错文件</code>，缓冲区大小应足够大以<code>读取整个记录</code>，而不仅仅是<code>块</code>。</li>
+<li><strong><code>dwWidth</code></strong>: 视频流<code>宽度</code>。以<code>像素</code>为单位。</li>
+<li><strong><code>dwHeight</code></strong>: 视频流<code>高度</code>。以<code>像素</code>为单位。</li>
+<li><strong><code>dwReserved</code></strong>: <code>保留</code>。将这个数组设置为<code>0</code>。</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;<strong><code>dwFlages</code></strong>中有效的<code>Flags</code>:</p>
+<blockquote>
+<ul>
+<li><strong><code>AVIF_HASINDEX</code></strong>: 该文件<code>有索引</code>。</li>
+<li><strong><code>AVIF_MUSTUSEINDEX</code></strong>: 指示应用程序应该使用<code>索引</code>，而不是文件中<code>块的物理顺序</code>，来确定<code>数据表示的顺序</code>。例如，这个标志可以用来创建一个<code>帧列表</code>来编辑。</li>
+<li><strong><code>AVIF_ISINTERLEAVED</code></strong>: Stream适当的<code>相互交错。</code></li>
+<li><strong><code>AVIF_WASCAPTUREFILE</code></strong>: 表示<code>AVI文件</code>是专门分配的用于<code>实时视频采集</code>的文件。应用程序在对设置了该标志的文件进行<code>写入之前</code>应该警告用户，因为用户可能会<code>对该文件进行整理</code>。</li>
+<li><strong><code>AVIF_COPYRIGHTED</code></strong>: 表示AVI文件包含<code>有版权的数据和软件</code>。当使用这个标志时，软件不应该允许<code>复制数据</code>。</li>
+<li><strong><code>AVIF_TRUSTCKTYPE</code></strong>(Open-DML only!): 该标志表示<code>索引</code>中的<code>关键帧标志</code>(AVIIF_KEYFRAME)是可靠的。如果未在<code>Open-DML</code>文件中设置此标志，则<code>关键帧标志</code>可能存在<code>缺陷</code>，而不会从<code>技术上</code>使文件无效。</li>
+</ul>
+</blockquote>
+<h4 id="2-2-2、strl-List-Stream-Header-List"><a href="#2-2-2、strl-List-Stream-Header-List" class="headerlink" title="2.2.2、strl List(Stream Header List)"></a>2.2.2、strl List(Stream Header List)</h4><p>&emsp;&emsp;<strong><code>“strl List”</code></strong>用于存储AVI文件中的<code>数据流</code>(<code>音频流</code>、<code>视频流</code>、<code>字幕流</code>)的相关信息。在<code>“hdrl List”</code>中的<code>“avih Chunk”</code>之后，有一个或多个<code>“strl List”</code>。</p>
+<blockquote>
+<ul>
+<li>1、AVI文件中有多少个<code>数据流</code>(视频流、音频流、字幕流)，这里就对应有多少个<code>“strl List”</code>。每个<code>“strl List”</code>都包含AVI文件中<code>一个数据流</code>的相关信息。</li>
+<li>2、每个<code>“strl List”</code>中至少包含一个<code>“strh Chunk”</code>和一个<code>“strf Chunk”</code>。</li>
+<li>3、<code>“strd Chunk”</code>和<code>“strn Chunk”</code>是可选的。</li>
+<li>4、根据<code>“strl List”</code>在<code>“hdrl List”</code>中的顺序，<code>“hdrl List”</code>中的<code>Stream Header</code>与<code>“movi List”</code>中的<code>Stream Data</code>是一一对应的。第一个<code>“strl List”</code>应用于<code>Stream 0</code>，第二个<code>“strl List”</code>应用于<code>Stream 1</code>，以此类推。</li>
+</ul>
+</blockquote>
+<h5 id="2-2-2-1、strh-Chunk-Stream-Header"><a href="#2-2-2-1、strh-Chunk-Stream-Header" class="headerlink" title="2.2.2.1、strh Chunk(Stream Header)"></a>2.2.2.1、strh Chunk(Stream Header)</h5><p>&emsp;&emsp;<strong><code>“strh Chunk”</code></strong>用于描述<code>“strl List”</code>对应的<code>数据流</code>的相关信息。此<code>Chunk</code>中的<code>data</code>中存储的是<strong><code>AVIStreamHeader</code></strong>结构体数据，其结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    DWORD dwFourCC;     <span class="comment">// 必须为'strh'</span></span><br><span class="line">    DWORD dwSize;       <span class="comment">// 本数据结构的大小，不包括最初的8个字节(dwFourCC和dwSize两个字段)</span></span><br><span class="line">    BYTE data[dwSize];  <span class="comment">// AVIStreamHeader struct</span></span><br><span class="line">&#125;CHUNK;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    FOURCC fccType;                 <span class="comment">// 4字节，表示数据流的种类，vids表示视频数据流，auds表示音频数据流</span></span><br><span class="line">    FOURCC fccHandler;              <span class="comment">// 4字节 ，表示数据流解压缩的驱动程序代号</span></span><br><span class="line">    DWORD dwFlags;                  <span class="comment">// 数据流属性</span></span><br><span class="line">    WORD wPriority;                 <span class="comment">// 此数据流的播放优先级</span></span><br><span class="line">    WORD wLanguage;                 <span class="comment">// 音频的语言代号</span></span><br><span class="line">    DWORD dwInitalFrames;           <span class="comment">// 说明在开始播放前需要多少桢</span></span><br><span class="line">    DWORD dwScale;                  <span class="comment">// 数据量，视频每桢的大小或者音频的采样大小</span></span><br><span class="line">    DWORD dwRate;                   <span class="comment">// dwScale/dwRate = 每秒的采样数</span></span><br><span class="line">    DWORD dwStart;                  <span class="comment">// 数据流开始播放的位置，以dwScale为单位</span></span><br><span class="line">    DWORD dwLength;                 <span class="comment">// 数据流的数据量，以dwScale为单位</span></span><br><span class="line">    DWORD dwSuggestedBufferSize;    <span class="comment">// 建议缓冲区的大小</span></span><br><span class="line">    DWORD dwQuality;                <span class="comment">// 解压缩质量参数，值越大，质量越好</span></span><br><span class="line">    DWORD dwSampleSize;             <span class="comment">// 音频的采样大小</span></span><br><span class="line">    RECT rcFrame;                   <span class="comment">// 视频图像所占的矩形</span></span><br><span class="line">&#125;AVIStreamHeader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">short</span> <span class="keyword">int</span> left;     </span><br><span class="line">    <span class="keyword">short</span> <span class="keyword">int</span> top;</span><br><span class="line">    <span class="keyword">short</span> <span class="keyword">int</span> right;</span><br><span class="line">    <span class="keyword">short</span> <span class="keyword">int</span> bottom;</span><br><span class="line">&#125;RECT;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><strong><code>dwFourCC</code></strong>: 标识此块为<code>“strh”</code>，用于存储<code>AVIStreamHeader</code>结构体数据。</li>
+<li><strong><code>dwSize</code></strong>: <code>AVIStreamHeader</code>结构体的<code>字节数</code>。</li>
+<li><strong><code>fccType</code></strong>: 表示<code>数据流的种类</code>，<code>“vids”</code>(视频流)、<code>“auds”</code>(音频流)、<code>“mids”</code>(MIDI流)、<code>“txts”</code>(字幕流)。</li>
+<li><strong><code>fccHandler</code></strong>: 要使用的<code>编解码器</code>的<code>FourCC</code>。</li>
+<li><strong><code>dwFlags</code></strong>: 数据流<code>属性</code>，定义了以下标志：<ul>
+<li><strong><code>AVISF_DISABLED</code></strong>: 默认情况下<code>不应激活</code>此数据流。</li>
+<li><strong><code>AVISF_VIDEO_PALCHANGES</code></strong>: Stream是使用<code>调色板</code>的<code>视频流</code>，其中在<code>播放过程</code>中<code>调色板</code>会发生变化。</li>
+</ul>
+</li>
+<li><strong><code>wPriority</code></strong>: 此数据流的<code>播放优先级</code>，当有多个<code>相同类型的流</code>时<code>优先级最高</code>的为<code>默认流</code>。</li>
+<li><strong><code>wLanguage</code></strong>: 音频的<code>语言代号</code>。</li>
+<li><strong><code>dwInitalFrames</code></strong>: 指定<code>交错文件</code>中<code>音频数据</code>在<code>视频帧</code>之前的<code>偏移量</code>。通常，这是大约<code>0.75秒</code>。如果要创建<code>交错文件</code>，请在该成员的AVI序列的<code>初始帧</code>之前指定<code>文件中的帧数</code>。有关更多信息，请参见<code>AVIMainHeader</code>结构的<code>dwInitialFrames</code>成员的备注。</li>
+<li><strong><code>dwScale</code></strong>: <code>数据量</code>，<code>视频</code>的<code>每桢的大小</code>或者<code>音频</code>的<code>采样大小</code>。与<code>dwRate</code>一起使用以指定<code>此流</code>将使用的<code>时间尺度</code>。将<code>dwRate</code>除以<code>dwScale</code>可得出<code>每秒的采样数</code>。对于<code>视频流</code>，这是<code>帧速率</code>。对于<code>音频流</code>，此速率对应于播放音频的<code>nBlockAlign字节</code>所需的<code>时间</code>，而对于<code>PCM音频</code>，这只是<code>采样速率</code>。dwScale和dwRate应该<code>互质</code>。测试表明，例如<code>10000000/400000</code>代替<code>25/1</code>会导致文件在某些<code>硬件MPEG4播放器</code>上不起作用。</li>
+<li><strong><code>dwRate</code></strong>: 参考dwScale。</li>
+<li><strong><code>dwStart</code></strong>: 指定此流的<code>开始时间</code>。单位由<code>AVIStreamHeader</code>中的<code>dwRate</code>和<code>dwScale</code>成员定义。通常，它是<code>0</code>，但是它可以为<code>不与文件同时启动的流</code>指定<code>延迟时间</code>。对于<code>VBR音频</code>，此值指示在流<code>开始之前</code>要播放的<code>无声帧数</code>。</li>
+<li><strong><code>dwLength</code></strong>: 指定<code>流的长度</code>，以<code>dwRate</code>和<code>dwScale</code>定义的单位为单位。</li>
+<li><strong><code>dwSuggestedBufferSize</code></strong>: 指定应使用<code>多大的缓冲区</code>来<code>读取此流</code>。通常，它包含一个与流中存在的<code>最大块</code>相对应的值。使用<code>正确的缓冲区大小</code>可使<code>播放效率更高</code>。如果您不知道<code>正确的缓冲区大小</code>，请使用<code>零</code>。<code>可以</code>为0(在这种情况下，应用程序必须<code>猜测</code>)，但<code>不应该</code>为0，因为<code>Microsoft</code>的<code>AVI解析器</code>在某些情况下<code>无法正确处理</code>此情况(例如，<code>Open-DML</code>文件中的<code>MP3-CBR</code>)。</li>
+<li><strong><code>dwQuality</code></strong>: 指定流中<code>数据质量</code>的指示符。质量表示为<code>0到10000</code>之间的数字。对于<code>压缩数据</code>，这通常表示传递给压缩软件的<code>质量参数</code>的值。如果设置为<code>–1</code>，驱动程序将使用<code>默认质量值</code>。</li>
+<li><strong><code>dwSampleSize</code></strong>: 指定<code>单个数据样本的大小</code>。如果<code>样本大小不同</code>，则将其设置为<code>0</code>。如果该数字<code>不为0</code>，则可以将<code>多个数据样本</code>分组到文件内的<code>单个块</code>中。如果为<code>0</code>，则<code>每个数据样本</code>(例如<code>视频帧</code>)必须位于<code>单独的块</code>中。对于<code>视频流</code>，此数字<code>通常为0</code>，但如果所有视频帧的<code>大小相同</code>，则可以为<code>非0</code>。对于<code>音频流</code>，此数字应与描述音频的<code>WAVEFORMATEX</code>结构的<code>nBlockAlign</code>成员相同。</li>
+<li><strong><code>rcFrame</code></strong>: 指定由<code>AVIMainHeader</code>结构的<code>dwWidth</code>和<code>dwHeight</code>成员指定的<code>影片矩形</code>内的<code>字幕</code>或<code>视频</code>流的<code>目标矩形</code>。<code>rcFrame</code>成员通常用于支持<code>多个视频流</code>。将此矩形设置为与<code>影片矩形</code>对应的坐标，以更新<code>整个影片矩形</code>。该成员的单位是<code>像素</code>。<code>目标矩形</code>的左上角相对于<code>影片矩形</code>的左上角。</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;该结构的某些成员也存在于<code>AVIMainHeader</code>结构中。<code>AVIMainHeader</code>结构中的数据应用于<code>整个文件</code>，而<code>AVIStreamHeader</code>结构中的数据应用于<code>一个流</code>。</p>
+<h5 id="2-2-2-2、strf-Chunk-Stream-Format"><a href="#2-2-2-2、strf-Chunk-Stream-Format" class="headerlink" title="2.2.2.2、strf Chunk(Stream Format)"></a>2.2.2.2、strf Chunk(Stream Format)</h5><p>&emsp;&emsp;<strong><code>“strf Chunk”</code></strong>紧跟在<code>“strh Chunk”</code>之后，其描述了数据流中<code>数据的格式</code>。此<code>Chunk</code>中包含的数据取决于<code>数据流的类型</code>。对于<strong><code>视频流</code></strong>，该信息是<strong><code>BITMAPINFO</code></strong>结构，包括适当的<code>调色板</code>信息。对于<strong><code>音频流</code></strong>，该信息是<strong><code>WAVEFORMATEX</code></strong>结构。</p>
+<h6 id="视频流-BITMAPINFO"><a href="#视频流-BITMAPINFO" class="headerlink" title="视频流(BITMAPINFO)"></a>视频流(BITMAPINFO)</h6><p>&emsp;&emsp;<strong><code>BITMAPINFO</code></strong>结构定义了一个<code>DIB</code>(Device-Independent Bitmap:设备无关位图)的<code>尺寸</code>和<code>颜色</code>信息。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    DWORD dwFourCC;     <span class="comment">// 必须为'strf'</span></span><br><span class="line">    DWORD dwSize;       <span class="comment">// 本数据结构的大小，不包括最初的8个字节(dwFourCC和dwSize两个字段)</span></span><br><span class="line">    BYTE data[dwSize];  <span class="comment">// BITMAPINFO struct</span></span><br><span class="line">&#125;CHUNK;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 位图信息</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">tagBITMAPINFO</span> &#123;</span></span><br><span class="line">    BITMAPINFOHEADER bmiHeader;</span><br><span class="line">    RGBQUAD          bmiColors[<span class="number">1</span>];</span><br><span class="line">&#125; BITMAPINFO;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 位图信息头</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">tagBITMAPINFOHEADER</span> &#123;</span></span><br><span class="line">    DWORD biSize;</span><br><span class="line">    LONG  biWidth;</span><br><span class="line">    LONG  biHeight;</span><br><span class="line">    WORD  biPlanes;</span><br><span class="line">    WORD  biBitCount;</span><br><span class="line">    DWORD biCompression;</span><br><span class="line">    DWORD biSizeImage;</span><br><span class="line">    LONG  biXPelsPerMeter;</span><br><span class="line">    LONG  biYPelsPerMeter;</span><br><span class="line">    DWORD biClrUsed;</span><br><span class="line">    DWORD biClrImportant;</span><br><span class="line">&#125; BITMAPINFOHEADER;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">tagRGBQUAD</span> &#123;</span></span><br><span class="line">    BYTE rgbBlue;</span><br><span class="line">    BYTE rgbGreen;</span><br><span class="line">    BYTE rgbRed;</span><br><span class="line">    BYTE rgbReserved;</span><br><span class="line">&#125; RGBQUAD;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><strong><code>dwFourCC</code></strong>: 标识此块为<code>“strf”</code>，用于存储<code>BITMAPINFO</code>结构体数据。</li>
+<li><strong><code>dwSize</code></strong>: <code>BITMAPINFO</code>结构体的<code>字节数</code>。</li>
+<li><strong><code>bmiHeader</code></strong>: 一个<code>BITMAPINFOHEADER</code>结构，包含关于DIB的<code>尺寸</code>和<code>颜色格式</code>的信息。</li>
+<li><strong><code>bmiColors</code></strong>: bmiColors成员包含以下之一:<ul>
+<li><code>RGBQUAD</code>的数组。数组元素组成了<code>颜色表</code>。</li>
+<li>一个16位<code>无符号整数数组</code>，用于指定当前实现的<code>逻辑调色板</code>中的<code>索引</code>。对于使用<code>DIB</code>的<code>函数</code>，可以使用<code>bmiColors</code>。数组中的<code>条目数</code>取决于<code>BITMAPINFOHEADER</code>结构的<code>biBitCount</code>和<code>biClrUsed</code>成员的值。<code>bmiColors</code>表中的颜色按<code>重要性</code>顺序显示。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;<code>DIB</code>(Device-Independent Bitmap:设备无关位图)由<code>两个不同的部分</code>组成：描述位图的<code>尺寸</code>和<code>颜色</code>的<code>BITMAPINFO</code>结构体，以及定义位图<code>像素</code>的<code>字节数组</code>。<code>数组中的位</code>打包在一起，但是<code>每条扫描线</code>必须用<code>0</code>填充，以在<code>LONG数据类型边界</code>上结束。如果位图的<code>高度为正</code>，则位图为<code>自下而上的DIB</code>，其原点为<code>左下角</code>。如果<code>高度为负</code>，则位图为<code>自上而下的DIB</code>，其原点为<code>左上角</code>。</p>
+<p>&emsp;&emsp;当<code>位图数组</code>紧跟在<code>BITMAPINFO</code>头之后时，位图<code>被压缩</code>。压缩的位图由<code>单个指针</code>引用。对于<code>压缩位图</code>，在使用<code>DIB_PAL_COLORS</code>模式时，必须将<code>biClrUsed</code>成员设置为<code>偶数</code>，以使<code>DIB位图数组</code>从<code>DWORD边界</code>开始(对齐)。</p>
+<p>&emsp;&emsp;<strong><code>BITMAPINFOHEADER</code></strong>结构体包含了<code>设备无关位图(DIB)</code>的<code>尺寸</code>和<code>颜色格式</code>的信息。</p>
+<blockquote>
+<ul>
+<li><strong><code>biSize</code></strong>: 指定此结构所需的<code>字节数</code>。如果它们被附加到<code>此结构的末尾</code>，则此值不包括<code>颜色表</code>的大小或<code>颜色掩码</code>的大小。</li>
+<li><strong><code>biWidth</code></strong>: 指定位图的<code>宽度</code>，以<code>像素</code>为单位。</li>
+<li><strong><code>biHeight</code></strong>: 指定位图的<code>高度</code>，以<code>像素</code>为单位。<ul>
+<li>对于<code>未压缩</code>的<code>RGB</code>位图，如果<code>biHeight为正</code>，则该位图是<code>自下而上的DIB</code>，其原点位于<code>左下角</code>。如果<code>biHeight为负</code>，则位图是<code>自上而下的DIB</code>，其原点位于<code>左上角</code>。</li>
+<li>对于<code>YUV</code>位图，无论<code>biHeight</code>的符号如何，位图始终是<code>自顶向下</code>的。<code>解码器</code>应提供具有<code>正biHeight</code>的<code>YUV</code>格式，但为了<code>向后兼容</code>，它们应接受具有<code>正或负biHeight</code>的<code>YUV</code>格式。</li>
+<li>对于<code>压缩</code>格式，<code>biHeight</code>必须为<code>正</code>，无论<code>图像方向</code>如何。</li>
+</ul>
+</li>
+<li><strong><code>biPlanes</code></strong>: 指定<code>目标设备</code>的<code>平面数</code>。此值必须<code>设置为1</code>。</li>
+<li><strong><code>biBitCount</code></strong>: 指定<code>每个像素的位数</code>(bits per pixel:<code>bpp</code>)。对于<code>未压缩</code>格式，此值为<code>每个像素的平均位数</code>。对于<code>压缩</code>格式，此值是在解码图像后<code>未压缩图像</code>的<code>隐含位深度</code>。</li>
+<li><strong><code>biCompression</code></strong>: <ul>
+<li>对于<code>压缩视频</code>和<code>YUV</code>格式，此成员是<code>FourCC</code>代码，指定为以<code>小端序</code>排列的<code>DWORD</code>。例如，<code>YUYV</code>视频的<code>FourCC</code>为<code>“VYUY”</code>或<code>0x56595559</code>。</li>
+<li>对于<code>未压缩</code>的<code>RGB</code>格式，可以使用以下值：<code>BI_RGB</code>(未压缩的RGB)、<code>BI_BITFIELDS</code>(带颜色掩码的未压缩RGB。适用于16位和32位的位图。)</li>
+<li>对于<code>16-bpp</code>位图，如果<code>biCompression</code>等于<code>BI_RGB</code>，则格式始终为<code>RGB555</code>。如果<code>biCompression</code>等于<code>BI_BITFIELDS</code>，则格式为<code>RGB555</code>或<code>RGB565</code>。使用<code>AM_MEDIA_TYPE</code>结构中的<code>子类型GUID</code>确定特定的<code>RGB类型</code>。</li>
+</ul>
+</li>
+<li><strong><code>biSizeImage</code></strong>: 指定<code>图像的大小</code>(以<code>字节</code>为单位)。对于<code>未压缩</code>的<code>RGB位图</code>，可以将其<code>设置为0</code>。</li>
+<li><strong><code>biXPelsPerMeter</code></strong>: 指定位图目标设备的<code>水平分辨率</code>(以<code>像素每米</code>为单位)。</li>
+<li><strong><code>biYPelsPerMeter</code></strong>: 指定位图目标设备的<code>垂直分辨率</code>(以<code>像素每米</code>为单位)。</li>
+<li><strong><code>biClrUsed</code></strong>: 指定<code>颜色表</code>中位图实际使用的<code>颜色索引数</code>。</li>
+<li><strong><code>biClrImportant</code></strong>: 指定被认为对显示位图<code>很重要</code>的<code>颜色索引数</code>。如果该值为<code>零</code>，则所有颜色<code>都很重要</code>。</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;<strong><code>RGBQUAD</code></strong>结构体成员含义：</p>
+<blockquote>
+<ul>
+<li><strong><code>rgbBlue</code></strong>: 颜色中<code>蓝色</code>的强烈程度。</li>
+<li><strong><code>rgbGreen</code></strong>: 颜色中<code>绿色</code>的强烈程度。</li>
+<li><strong><code>rgbRed</code></strong>: 颜色中<code>红色</code>的强烈程度。</li>
+<li><strong><code>rgbReserved</code></strong>: 该成员是<code>保留</code>的，并且<code>必须为零</code>。</li>
+</ul>
+</blockquote>
+<h6 id="音频流-WAVEFORMATEX"><a href="#音频流-WAVEFORMATEX" class="headerlink" title="音频流(WAVEFORMATEX)"></a>音频流(WAVEFORMATEX)</h6><p>&emsp;&emsp;<strong><code>WAVEFORMATEX</code></strong>结构定义了<code>波形音频数据</code>的格式。 该结构仅包括所有<code>波形音频数据</code>格式<code>共有的</code>格式信息。 对于需要<code>附加信息</code>的格式，此结构作为<code>附加信息</code>包括在<code>另一个结构</code>中作为<code>第一个成员</code>。</p>
+<p>&emsp;&emsp;支持<code>两个以上通道</code>或<code>超过16位的样本大小</code>(更高的采样分辨率)的格式可以用<code>WAVEFORMATEXTENSIBLE</code>结构来描述，该结构包括<code>WAVEFORMATEX</code>结构。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    DWORD dwFourCC;     <span class="comment">// 必须为'strf'</span></span><br><span class="line">    DWORD dwSize;       <span class="comment">// 本数据结构的大小，不包括最初的8个字节(dwFourCC和dwSize两个字段)</span></span><br><span class="line">    BYTE data[dwSize];  <span class="comment">// WAVEFORMATEX struct或WAVEFORMATEXTENSIBLE struct</span></span><br><span class="line">&#125; CHUNK;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">tWAVEFORMATEX</span> &#123;</span></span><br><span class="line">    WORD  wFormatTag;</span><br><span class="line">    WORD  nChannels;</span><br><span class="line">    DWORD nSamplesPerSec;</span><br><span class="line">    DWORD nAvgBytesPerSec;</span><br><span class="line">    WORD  nBlockAlign;</span><br><span class="line">    WORD  wBitsPerSample;</span><br><span class="line">    WORD  cbSize;</span><br><span class="line">&#125; WAVEFORMATEX;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    WAVEFORMATEX Format;</span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">        WORD wValidBitsPerSample;</span><br><span class="line">        WORD wSamplesPerBlock;</span><br><span class="line">        WORD wReserved;</span><br><span class="line">    &#125; Samples;</span><br><span class="line">    DWORD  dwChannelMask;</span><br><span class="line">    GUID   SubFormat;</span><br><span class="line">&#125; WAVEFORMATEXTENSIBLE;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;<strong><code>WAVEFORMATEX</code></strong>结构体成员含义：</p>
+<blockquote>
+<ul>
+<li><strong><code>wFormatTag</code></strong>: <code>波形音频格式</code>类型。格式标签已向<code>Microsoft Corporation</code>注册用于许多<code>压缩算法</code>。可以在<code>Mmreg.h</code>头文件中找到<code>格式标签</code>的完整列表。 对于<code>一个或两个通道</code>的<code>PCM数据</code>，此值应为<code>WAVE_FORMAT_PCM</code>。当此结构包含在<code>WAVEFORMATEXTENSIBLE</code>结构中时，此值必须为<code>WAVE_FORMAT_EXTENSIBLE</code>。</li>
+<li><strong><code>nChannels</code></strong>: <code>波形音频数据</code>中的<code>通道数</code>。<code>单声道</code>数据使用<code>一个通道</code>，<code>立体声</code>数据使用<code>两个通道</code>。</li>
+<li><strong><code>nSamplesPerSec</code></strong>: <code>采样率</code>，以<code>每秒采样数</code>(赫兹:hz)为单位。如果<code>wFormatTag</code>为<code>WAVE_FORMAT_PCM</code>，则<code>nSamplesPerSec</code>的常用值为<code>8.0kHz</code>，<code>11.025kHz</code>，<code>22.05kHz</code>和<code>44.1kHz</code>。对于<code>非PCM</code>格式，必须根据<code>制造商</code>的<code>格式标签规范</code>来计算此成员。</li>
+<li><strong><code>nAvgBytesPerSec</code></strong>: 格式标签所需的<code>平均数据传输速率</code>，以<code>字节每秒</code>为单位。如果<code>wFormatTag</code>是<code>WAVE_FORMAT_PCM</code>，则<code>nAvgBytesPerSec</code>应该等于<code>nSamplesPerSec</code>和<code>nBlockAlign</code>的乘积。对于<code>非PCM</code>格式，必须根据<code>制造商</code>的<code>格式标签规范</code>来计算此成员。</li>
+<li><strong><code>nBlockAlign</code></strong>: <code>块对齐</code>，以<code>字节</code>为单位。块对齐是<code>wFormatTag</code>格式类型的<code>最小数据原子单位</code>。如果<code>wFormatTag</code>是<code>WAVE_FORMAT_PCM</code>或<code>WAVE_FORMAT_EXTENSIBLE</code>，则<code>nBlockAlign</code>必须等于<code>nChannels</code>和<code>wBitsPerSample</code>的<code>乘积除以8</code>(位/字节)。对于<code>非PCM</code>格式，必须根据<code>制造商</code>的<code>格式标签规范</code>来计算此成员。软件必须一次处理<code>多个nBlockAlign字节</code>数据。对设备的<code>读写数据</code>必须始终从<code>块的开头</code>开始。例如，在<code>样本中间</code>(即在<code>非块对齐边界</code>上)开始播放<code>PCM数据</code>是<code>非法</code>的。</li>
+<li><strong><code>wBitsPerSample</code></strong>: <code>wFormatTag</code>格式类型的<code>每个样本位数</code>。如果<code>wFormatTag</code>是<code>WAVE_FORMAT_PCM</code>，则<code>wBitsPerSample</code>应该等于<code>8或16</code>。对于<code>非PCM</code>格式，必须根据<code>制造商</code>的<code>格式标签规范</code>设置此成员。如果<code>wFormatTag</code>是<code>WAVE_FORMAT_EXTENSIBLE</code>，则此值可以是<code>8的任何整数倍</code>，并表示<code>容器的大小</code>，不一定是<code>样本的大小</code>；例如，一个<code>20位样本</code>在<code>24位容器</code>中。某些<code>压缩方案</code>无法为<code>wBitsPerSample</code>定义值，因此该成员<code>可以为0</code>。</li>
+<li><strong><code>cbSize</code></strong>: 附加在<code>WAVEFORMATEX</code>结构末尾的<code>额外格式信息的大小</code>(以<code>字节</code>为单位)。<code>非PCM</code>格式可以使用此信息来存储<code>wFormatTag</code>的<code>其他属性</code>。如果<code>wFormatTag</code>不需要其他信息，则必须将此成员<code>设置为0</code>。对于<code>WAVE_FORMAT_PCM</code>格式(仅WAVE_FORMAT_PCM格式)，将<code>忽略</code>此成员。当此结构包含在<code>WAVEFORMATEXTENSIBLE</code>结构中时，该值必须<code>至少为22</code>。</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;使用<code>额外信息</code>的格式的一个示例是<code>Microsoft自适应增量脉冲编码调制</code>(MS-ADPCM)格式。 <code>MS-ADPCM</code>的<code>wFormatTag</code>是<code>WAVE_FORMAT_ADPCM</code>。<code>cbSize</code>成员通常将<code>设置为32</code>。为<code>WAVE_FORMAT_ADPCM</code>存储的额外信息是<code>编码和解码</code>波形音频数据所需的<code>系数对</code>。</p>
+<p>&emsp;&emsp;<strong><code>WAVEFORMATEXTENSIBLE</code></strong>结构体成员含义：</p>
+<blockquote>
+<ul>
+<li><strong><code>Format</code></strong>: 指定基本格式的<code>WAVEFORMATEX</code>结构。<code>wFormatTag</code>成员必须为<code>WAVE_FORMAT_EXTENSIBLE</code>。<code>cbSize</code>成员必须<code>至少为22</code>。</li>
+<li><strong><code>Samples</code></strong>: 描述<code>样本格式</code>的联合体(union)。<ul>
+<li><strong><code>Samples.wValidBitsPerSample</code></strong>: 信号中的<code>精度位数</code>。通常等于<code>WAVEFORMATEX.wBitsPerSample</code>。但是，<code>wBitsPerSample</code>是<code>容器大小</code>，并且必须是<code>8的倍数</code>，而<code>wValidBitsPerSample</code>可以是<code>不超过容器大小</code>的任何值。例如，如果格式使用<code>20位样本</code>，则<code>wBitsPerSample</code>必须<code>至少为24</code>，而<code>wValidBitsPerSample</code>为<code>20</code>。</li>
+<li><strong><code>Samples.wSamplesPerBlock</code></strong>: 一个<code>音频数据压缩块</code>中包含的<code>样本数</code>。此值用于<code>缓冲区估计</code>。该值与<code>压缩格式</code>一起使用，该压缩格式在<code>每个块</code>中具有<code>固定数量的样本</code>。如果<code>每个压缩音频数据块</code>中包含<code>可变数量的样本</code>，则可以将该值<code>设置为0</code>。在这种情况下，需要以其他方式获得<code>缓冲区估计</code>和<code>位置信息</code>。</li>
+<li><strong><code>Samples.wReserved</code></strong>: <code>保留</code>给操作系统内部使用。<code>设置为0</code>。</li>
+</ul>
+</li>
+<li><strong><code>dwChannelMask</code></strong>: <code>通道掩码</code>，<code>位掩码</code>，指定将<code>流中的通道</code>分配给<code>扬声器的位置</code>。</li>
+<li><strong><code>SubFormat</code></strong>: 数据的<code>子格式</code>，例如<code>KSDATAFORMAT_SUBTYPE_PCM</code>。子格式信息类似于<code>WAVEFORMATEX</code>结构的<code>wFormatTag</code>成员中的标签所提供的信息。</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;<code>WAVEFORMATEXTENSIBLE</code>可以描述<code>WAVEFORMATEX</code>可以描述的<code>任何格式</code>，但可以为<code>两个以上的通道</code>提供额外的支持，为了使<code>每个样本的位数</code>更精确，并支持<code>新的压缩方案</code>。</p>
+<p>&emsp;&emsp;<code>WAVEFORMATEXTENSIBLE</code>可以安全地强制转换为<code>WAVEFORMATEX</code>，因为它仅配置<code>WAVEFORMATEX.cbSize</code>指定的额外字节。</p>
+<p>&emsp;&emsp;<strong><code>dwChannelMask</code></strong>成员指定<code>多通道流</code>中存在<code>哪些通道</code>。<code>最低有效位</code>对应于<code>左前扬声器</code>，<code>下一个最低有效位</code>对应于<code>右前扬声器</code>，依此类推。这些位按<code>意义顺序</code>定义如下。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Speaker Position</th>
+<th style="text-align:left">Flag Bit</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">SPEAKER_FRONT_LEFT</td>
+<td style="text-align:left">0x1</td>
+<td style="text-align:left">左前扬声器</td>
+</tr>
+<tr>
+<td style="text-align:left">SPEAKER_FRONT_RIGHT</td>
+<td style="text-align:left">0x2</td>
+<td style="text-align:left">右前扬声器</td>
+</tr>
+<tr>
+<td style="text-align:left">SPEAKER_FRONT_CENTER</td>
+<td style="text-align:left">0x4</td>
+<td style="text-align:left">前中扬声器</td>
+</tr>
+<tr>
+<td style="text-align:left">SPEAKER_LOW_FREQUENCY</td>
+<td style="text-align:left">0x8</td>
+<td style="text-align:left">低频扬声器</td>
+</tr>
+<tr>
+<td style="text-align:left">SPEAKER_BACK_LEFT</td>
+<td style="text-align:left">0x10</td>
+<td style="text-align:left">左后扬声器</td>
+</tr>
+<tr>
+<td style="text-align:left">SPEAKER_BACK_RIGHT</td>
+<td style="text-align:left">0x20</td>
+<td style="text-align:left">右后扬声器</td>
+</tr>
+<tr>
+<td style="text-align:left">SPEAKER_FRONT_LEFT_OF_CENTER</td>
+<td style="text-align:left">0x40</td>
+<td style="text-align:left">左前中置扬声器</td>
+</tr>
+<tr>
+<td style="text-align:left">SPEAKER_FRONT_RIGHT_OF_CENTER</td>
+<td style="text-align:left">0x80</td>
+<td style="text-align:left">右前中置扬声器</td>
+</tr>
+<tr>
+<td style="text-align:left">SPEAKER_BACK_CENTER</td>
+<td style="text-align:left">0x100</td>
+<td style="text-align:left">后中扬声器</td>
+</tr>
+<tr>
+<td style="text-align:left">SPEAKER_SIDE_LEFT</td>
+<td style="text-align:left">0x200</td>
+<td style="text-align:left">左侧扬声器</td>
+</tr>
+<tr>
+<td style="text-align:left">SPEAKER_SIDE_RIGHT</td>
+<td style="text-align:left">0x400</td>
+<td style="text-align:left">右侧扬声器</td>
+</tr>
+<tr>
+<td style="text-align:left">SPEAKER_TOP_CENTER</td>
+<td style="text-align:left">0x800</td>
+<td style="text-align:left">上层中置扬声器</td>
+</tr>
+<tr>
+<td style="text-align:left">SPEAKER_TOP_FRONT_LEFT</td>
+<td style="text-align:left">0x1000</td>
+<td style="text-align:left">上层左前扬声器</td>
+</tr>
+<tr>
+<td style="text-align:left">SPEAKER_TOP_FRONT_CENTER</td>
+<td style="text-align:left">0x2000</td>
+<td style="text-align:left">上层前中扬声器</td>
+</tr>
+<tr>
+<td style="text-align:left">SPEAKER_TOP_FRONT_RIGHT</td>
+<td style="text-align:left">0x4000</td>
+<td style="text-align:left">上层右前扬声器</td>
+</tr>
+<tr>
+<td style="text-align:left">SPEAKER_TOP_BACK_LEFT</td>
+<td style="text-align:left">0x8000</td>
+<td style="text-align:left">上层左后扬声器</td>
+</tr>
+<tr>
+<td style="text-align:left">SPEAKER_TOP_BACK_CENTER</td>
+<td style="text-align:left">0x10000</td>
+<td style="text-align:left">上层后中扬声器</td>
+</tr>
+<tr>
+<td style="text-align:left">SPEAKER_TOP_BACK_RIGHT</td>
+<td style="text-align:left">0x20000</td>
+<td style="text-align:left">上层右后扬声器</td>
+</tr>
+</tbody>
+</table>
+<p>&emsp;&emsp;<code>dwChannelMask</code>中指定的通道必须以<code>规定的顺序</code>显示(从<code>最低有效位</code>开始)。例如，如果仅指定<code>SPEAKER_FRONT_LEFT</code>和<code>SPEAKER_FRONT_RIGHT</code>，则<code>左前扬声器</code>的采样必须<code>首先</code>出现在<code>交错流</code>中。<code>dwChannelMask</code>中设置的<code>位数</code>应与<code>WAVEFORMATEX.nChannels</code>中指定的<code>通道数</code>相同。</p>
+<p>&emsp;&emsp;为了<code>向后兼容</code>，任何可以由独立的<code>WAVEFORMATEX</code>结构指定的<code>波形格式</code>也可以由<code>WAVEFORMATEXTENSIBLE</code>结构定义。因此，<code>mmreg.h</code>中的每个<code>波形格式标签</code>都具有一个对应的<code>SubFormat GUID</code>。下表显示了一些典型的<strong><code>波形格式标签</code></strong>及其相应的<strong><code>SubFormat GUID</code></strong>。这些GUID在<code>Ksmedia.h</code>中定义。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Wave-Format Tag</th>
+<th style="text-align:left">SubFormat GUID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">WAVE_FORMAT_PCM</td>
+<td style="text-align:left">KSDATAFORMAT_SUBTYPE_PCM</td>
+</tr>
+<tr>
+<td style="text-align:left">WAVE_FORMAT_IEEE_FLOAT</td>
+<td style="text-align:left">KSDATAFORMAT_SUBTYPE_IEEE_FLOAT</td>
+</tr>
+<tr>
+<td style="text-align:left">WAVE_FORMAT_DRM</td>
+<td style="text-align:left">KSDATAFORMAT_SUBTYPE_DRM</td>
+</tr>
+<tr>
+<td style="text-align:left">WAVE_FORMAT_ALAW</td>
+<td style="text-align:left">KSDATAFORMAT_SUBTYPE_ALAW</td>
+</tr>
+<tr>
+<td style="text-align:left">WAVE_FORMAT_MULAW</td>
+<td style="text-align:left">KSDATAFORMAT_SUBTYPE_MULAW</td>
+</tr>
+<tr>
+<td style="text-align:left">WAVE_FORMAT_ADPCM</td>
+<td style="text-align:left">KSDATAFORMAT_SUBTYPE_ADPCM</td>
+</tr>
+</tbody>
+</table>
+<p>&emsp;&emsp;由于<code>WAVEFORMATEXTENSIBLE</code>是<code>WAVEFORMATEX</code>的扩展版本，因此它可以描述其他<code>WAVEFORMATEX</code>无法<code>单独描述</code>的格式。<code>供应商</code>可以自由定义自己的<code>SubFormat GUID</code>，以标识没有<code>波形格式标签</code>的<code>专有格式</code>。</p>
+<p>&emsp;&emsp;对于特定的<strong><code>扩展格式</code></strong>，以下结构定义为<code>WAVEFORMATEXTENSIBLE</code>。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Definition</th>
+<th style="text-align:left">Value of SubFormat</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">WAVEFORMATIEEEFLOATEX</td>
+<td style="text-align:left">KSDATAFORMAT_SUBTYPE_IEEE_FLOAT</td>
+</tr>
+<tr>
+<td style="text-align:left">WAVEFORMATPCMEX</td>
+<td style="text-align:left">KSDATAFORMAT_SUBTYPE_PCM</td>
+</tr>
+</tbody>
+</table>
+<h5 id="2-2-2-3、strd-Chunk-Stream-Header-Data-Additional-Header-Data"><a href="#2-2-2-3、strd-Chunk-Stream-Header-Data-Additional-Header-Data" class="headerlink" title="2.2.2.3、strd Chunk(Stream Header Data / Additional Header Data)"></a>2.2.2.3、strd Chunk(Stream Header Data / Additional Header Data)</h5><p>&emsp;&emsp;<strong><code>“strd Chunk”</code></strong>紧跟在<code>“strf Chunk”</code>之后，保存的是<code>可选的</code>额外的<code>流的头信息</code>数据。如果存在<code>Stream Header Data</code>(“strd”)块，则其遵循<code>Stream Format</code>(“strf”)块。该块的<code>格式和内容</code>由<code>编解码器驱动程序</code>定义。通常，<code>驱动程序</code>使用此信息进行<code>配置</code>。<code>读取和写入</code>AVI文件的应用程序不需要<code>解释此信息</code>。他们简单地将其作为<code>存储块</code>在<code>驱动程序之间</code>来回传输。</p>
+<h5 id="2-2-2-4、strn-Chunk-Stream-Name"><a href="#2-2-2-4、strn-Chunk-Stream-Name" class="headerlink" title="2.2.2.4、strn Chunk(Stream Name)"></a>2.2.2.4、strn Chunk(Stream Name)</h5><p>&emsp;&emsp;可选的<strong><code>“strn”</code></strong>块包含描述该流的<code>以null结尾</code>的<code>文本字符串</code>。该块包含<code>流的名称</code>。该流名称仅应使用<code>纯ASCII</code>，尤其不能使用<code>UTF-8</code>。</p>
+<h5 id="2-2-2-5、indx-Chunk-Super-Index-Chunk"><a href="#2-2-2-5、indx-Chunk-Super-Index-Chunk" class="headerlink" title="2.2.2.5、indx Chunk(Super Index Chunk)"></a>2.2.2.5、indx Chunk(Super Index Chunk)</h5><p>&emsp;&emsp;只有符合<strong><code>Open-DML(AVI2.0)</code></strong>规范的<code>AVI文件</code>才可能<code>存在此块</code>。每个流在其<code>Stream Header List</code>(“strl”)中都包含一个<strong><code>“indx”</code></strong>块。该块是<code>超级索引块</code>(Upper Level Index Chunk或Super Index Chunk)，<code>索引的索引</code>。</p>
+<p>&emsp;&emsp;<strong><code>Upper Level Index</code></strong>(“Super Index”)指向<code>其他索引块</code>，并具有以下结构：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">avisuperindex</span> &#123;</span></span><br><span class="line">    FOURCC  fcc;</span><br><span class="line">    UINT    cb;</span><br><span class="line">    WORD    wLongsPerEntry;</span><br><span class="line">    BYTE    bIndexSubType;</span><br><span class="line">    BYTE    bIndexType;</span><br><span class="line">    DWORD   nEntriesInUse;</span><br><span class="line">    DWORD   dwChunkId;</span><br><span class="line">    DWORD   dwReserved[<span class="number">3</span>];</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> _<span class="title">avisuperindex_entry</span> &#123;</span></span><br><span class="line">        __int64   qwOffset;</span><br><span class="line">        DWORD     dwSize;</span><br><span class="line">        DWORD     dwDuration;</span><br><span class="line">    &#125; aIndex[];</span><br><span class="line">&#125; AVISUPERINDEX;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><strong><code>fcc</code></strong>: <code>FourCC</code>代码。与<code>Chunk</code>结构体中的<code>dwFourCC</code>相同。该值必须为<code>&#39;indx&#39;</code>。</li>
+<li><strong><code>cb</code></strong>: 此结构体的<code>大小</code>，与<code>Chunk</code>结构体中的<code>dwSize</code>相同。不包括初始的<code>8个字节</code>(fcc和cb)。</li>
+<li><strong><code>wLongsPerEntry</code></strong>: 每个<code>索引项的大小</code>，以<code>4字节</code>为单位。此值<code>必须为4</code>。每个<code>aIndex[i]</code>的大小为<code>4*wLongsPerEntry</code>个字节。(每个<code>aIndex[i]</code>的结构取决于<code>特定类型的索引</code>)</li>
+<li><strong><code>bIndexSubType</code></strong>: <code>索引子类型</code>。必须为<code>0</code>或<code>AVI_INDEX_SUB_2FIELD</code>。</li>
+<li><strong><code>bIndexType</code></strong>: <code>索引类型</code>。必须为<code>AVI_INDEX_OF_INDEXES</code>。</li>
+<li><strong><code>nEntriesInUse</code></strong>: aIndex数组中<code>有效的条目数</code>。<code>aIndex[0]..aIndex[nEntriesInUse-1]</code>有效。</li>
+<li><strong><code>dwChunkId</code></strong>: 标识<code>被索引</code>的对象的<code>FourCC</code>。<code>索引</code>指向的<code>流的ID</code>，例如<code>“00dc”</code>。因此，一个这样的<code>索引块</code>只能指向<code>同一个流</code>的数据。</li>
+<li><strong><code>dwReserved</code></strong>: <code>保留</code>。将数组元素<code>设置为0</code>。</li>
+<li><strong><code>aIndex</code></strong>: 包含下列成员的结构体数组。数组中的<code>元素数量</code>是根据<code>cb的值</code>计算的。<ul>
+<li><strong><code>qwOffset</code></strong>: 从<code>文件开头</code>到该条目所指向的<code>子索引块</code>的<code>偏移量</code>，以<code>字节</code>为单位。</li>
+<li><strong><code>dwSize</code></strong>: <code>子索引块</code>的<code>大小</code>(该条目指向的<code>标准</code>或<code>域</code>索引块的大小)，以<code>字节</code>为单位。</li>
+<li><strong><code>dwDuration</code></strong>: <code>子索引</code>所覆盖的文件的<code>持续时间</code>，以<code>流节拍</code>(stream ticks)为测量单位，如在<code>AVI Stream Header</code>中指出的(<code>dwScale/dwRate</code>)。对于<code>视频</code>或<code>VBR音频</code>，通常指<code>帧数</code>。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;<strong><code>“indx Chunk”</code></strong>(Super Index Chunk)的示意图如下：</p>
+<div align="left"><img src="/resources/2020/AVI_Format/Super Index Chunk.png" width="70%" height="50%" alt="Super Index Chunk(indx)"></div>
+
+<h3 id="2-3、INFO-List"><a href="#2-3、INFO-List" class="headerlink" title="2.3、INFO List"></a>2.3、INFO List</h3><p>&emsp;&emsp;<strong><code>“INFO”</code></strong>列表是已注册的<code>全局表单</code>类型，可以存储有助于<code>识别块内容</code>的信息。此信息很有用，但不会影响<code>程序解释文件</code>的方式；例如<code>版权信息</code>和<code>注释</code>。<code>“INFO”</code>列表是列表类型为<code>“INFO”</code>的<code>“LIST”</code>块。以下示例显示了示例<code>“INFO”</code>列表块：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">LIST('INFO' INAM("Two Trees"Z)</span><br><span class="line">            ICMT(<span class="string">"A picture for the opening screen"</span>Z) </span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;<code>“INFO”</code>列表应仅包含<strong><code>以下块</code></strong>。可以定义<code>新的块</code>，但是应用程序应<code>忽略</code>它<code>不理解</code>的任何块。下面列出的块可能仅出现在<code>“INFO”</code>列表中。每个块都包含一个<code>ZSTR</code>或<code>以null结尾</code>的文本字符串(所有<code>文本字符串</code>必须<code>对齐</code>)。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Chunk ID</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">IARL</td>
+<td style="text-align:left">存档位置(Archival Location)。指示文件主题的存档位置。</td>
+</tr>
+<tr>
+<td style="text-align:center">IART</td>
+<td style="text-align:left">艺术家(Artist)。列出文件原始主题的艺术家；例如，“Michaelangelo.”。</td>
+</tr>
+<tr>
+<td style="text-align:center">ICMS</td>
+<td style="text-align:left">受委托的(Commissioned)。列出受委托的文件主题的人员或组织的名称；例如“Pope Julian II.”。</td>
+</tr>
+<tr>
+<td style="text-align:center">ICMT</td>
+<td style="text-align:left">注释(Comments)。提供有关文件或文件主题的一般注释。如果注释长几个句子，请以句号结尾每个句子。不要包含换行符。</td>
+</tr>
+<tr>
+<td style="text-align:center">ICOP</td>
+<td style="text-align:left">版权(Copyright)。记录文件的版权信息；例如，“Copyright Encyclopedia International 1991.”。如果有多个版权，请用分号和空格隔开。</td>
+</tr>
+<tr>
+<td style="text-align:center">ICRD</td>
+<td style="text-align:left">创建日期(Creation date)。指定创建文件主题的日期。以年-月-日格式列出日期，左边用0填充一位数的月和日；例如1553年5月3日的“1553-05-03”。</td>
+</tr>
+<tr>
+<td style="text-align:center">ICRP</td>
+<td style="text-align:left">裁剪(Cropped)。描述图像是否已裁剪，如果已裁剪，则如何裁剪；例如“lower-right corner.”。</td>
+</tr>
+<tr>
+<td style="text-align:center">IDIM</td>
+<td style="text-align:left">大小(Dimensions)。指定文件原始主题的大小；例如，“8.5 in h，11 in w”</td>
+</tr>
+<tr>
+<td style="text-align:center">IDPI</td>
+<td style="text-align:left">每英寸点数(Dots Per Inch)。存储用于生成文件的数字化转换器的每英寸点数设置，例如“300”。</td>
+</tr>
+<tr>
+<td style="text-align:center">IENG</td>
+<td style="text-align:left">工程师(Engineer)。存储处理文件的工程师的姓名。如果有多个工程师，请用分号和空格分隔名称；例如，“Smith, John; Adams, Joe.”</td>
+</tr>
+<tr>
+<td style="text-align:center">IGNR</td>
+<td style="text-align:left">类型(Genre)。描述原始作品，例如“landscape,”、“portrait,”、“still life,”等。</td>
+</tr>
+<tr>
+<td style="text-align:center">IKEY</td>
+<td style="text-align:left">关键字(Keywords)。提供引用文件或文件主题的关键字列表。用分号和空格分隔多个关键字；例如，“Seattle; aerial view; scenery.”</td>
+</tr>
+<tr>
+<td style="text-align:center">ILGT</td>
+<td style="text-align:left">亮度(Lightness)。描述生成文件所需的数字化转换器的亮度设置的更改。请注意，此信息的格式取决于所使用的硬件。</td>
+</tr>
+<tr>
+<td style="text-align:center">IMED</td>
+<td style="text-align:left">媒介(Medium)。描述文件的原始主题，例如“computer image,”(计算机图片)、“drawing,”(绘画)、“lithograph,”(石板画)等。</td>
+</tr>
+<tr>
+<td style="text-align:center">INAM</td>
+<td style="text-align:left">名称(Name)。存储文件主题的标题，例如“Seattle From Above.”</td>
+</tr>
+<tr>
+<td style="text-align:center">IPLT</td>
+<td style="text-align:left">调色板设置(Palette Setting)。指定数字化图像时要求的颜色数量，例如“256”。</td>
+</tr>
+<tr>
+<td style="text-align:center">IPRD</td>
+<td style="text-align:left">产物(Product)。指定文件最初打算使用的标题的名称，例如“Encyclopedia of Pacific Northwest Geography.”。</td>
+</tr>
+<tr>
+<td style="text-align:center">ISBJ</td>
+<td style="text-align:left">主题(Subject)。描述文件的内容，例如“Aerial view of Seattle.”。</td>
+</tr>
+<tr>
+<td style="text-align:center">ISFT</td>
+<td style="text-align:left">软件(Software)。标识用于创建文件的软件包的名称，例如“Microsoft WaveEdit.”。</td>
+</tr>
+<tr>
+<td style="text-align:center">ISHP</td>
+<td style="text-align:left">清晰度(Sharpness)。标识生成文件所需的数字化转换器的清晰度变化(格式取决于所使用的硬件)。</td>
+</tr>
+<tr>
+<td style="text-align:center">ISRC</td>
+<td style="text-align:left">源(Source)。标识提供文件原始主题的人员或组织的名称；例如“Trey Research.”。</td>
+</tr>
+<tr>
+<td style="text-align:center">ISRF</td>
+<td style="text-align:left">原始形式(Source Form)。标识被数字化的材料的原始形式，例如“slide,”、“paper,”、“map,”等。这不一定与IMED相同。</td>
+</tr>
+<tr>
+<td style="text-align:center">ITCH</td>
+<td style="text-align:left">技术员(Technician)。标识将主题文件数字化的技术人员；例如“Smith, John.”。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-4、movi-List"><a href="#2-4、movi-List" class="headerlink" title="2.4、movi List"></a>2.4、movi List</h3><p>&emsp;&emsp;头信息(<code>hdrl List</code>)之后是一个<strong><code>“movi”</code></strong>列表，其中包含<code>流中的实际数据</code>，即<code>视频帧</code>和<code>音频样本</code>。数据块可以<strong><code>直接驻留</code></strong>在<code>“movi”</code>列表中，或者它们可能会<code>被归类</code>到<strong><code>“rec”列表</code></strong>中。<code>“rec”</code>分组意味着应该<code>一次性</code>从磁盘读取分组的块，并且该块旨在用于<code>从CD-ROM交错播放</code>的文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">LIST movi</span><br><span class="line">    LIST rec</span><br><span class="line">        01wb</span><br><span class="line">        01wb</span><br><span class="line">        02wb</span><br><span class="line">        03wb</span><br><span class="line">        03wb</span><br><span class="line">        03wb</span><br><span class="line">        00dc</span><br><span class="line">        00dc</span><br><span class="line">    LIST rec</span><br><span class="line">        01wb</span><br><span class="line">        02wb</span><br><span class="line">    LIST rec</span><br><span class="line">        ...</span><br><span class="line">        ...</span><br><span class="line">        ix01</span><br><span class="line">        ix02</span><br><span class="line">        ix03</span><br><span class="line">        ....</span><br><span class="line">        ....</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将块分组为<code>rec-Lists</code>可防止在使用<code>Microsoft AVI Splitter</code>进行重放时<code>过多的搜索</code>，但不允许在某些<code>独立的重放设备</code>上进行播放。</p>
+<p>&emsp;&emsp;流的<code>最大块</code>大小应<code>小于</code>相应的<code>dwSuggestedBufferSize</code>值。否则，某些播放器，尤其是<code>Microsoft AVI Splitter</code>，可能会<code>发生故障</code>。</p>
+<p>&emsp;&emsp;标识每个数据块的<code>FourCC</code>包含一个<code>两位数字</code>的<code>流编号</code>，后面跟着的是一个用于定义块中<code>信息的类型</code>的<strong><code>两个字符的编码</code></strong>。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Two-Character Code</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">..db</td>
+<td style="text-align:left">未压缩视频帧数据块</td>
+</tr>
+<tr>
+<td style="text-align:center">..dc</td>
+<td style="text-align:left">压缩视频帧数据块</td>
+</tr>
+<tr>
+<td style="text-align:center">..wb</td>
+<td style="text-align:left">音频数据块</td>
+</tr>
+<tr>
+<td style="text-align:center">..tx</td>
+<td style="text-align:left">字幕数据块</td>
+</tr>
+<tr>
+<td style="text-align:center">ix..</td>
+<td style="text-align:left">标准索引块</td>
+</tr>
+<tr>
+<td style="text-align:center">..pc</td>
+<td style="text-align:left">调色板更换数据块</td>
+</tr>
+</tbody>
+</table>
+<p>&emsp;&emsp;例如，如果<code>Stream0</code>包含<code>音频</code>，则该流的数据块将具有<code>“00wb”</code>形式的<code>FourCC</code>。如果<code>Stream1</code>包含<code>视频</code>，则该流的数据块将具有<code>“01db”</code>或<code>“01dc”</code>形式的<code>FourCC</code>。<code>视频数据块</code>还可以定义<code>新的调色板条目</code>，以便在<code>AVI序列</code>期间<code>更新调色板</code>。每个<code>调色板更换数据块</code>(<code>“..pc”</code>)都包含一个<code>AVIPALCHANGE</code>结构。如果流包含<code>调色板更换数据块</code>(“..pc”)，请在该流的<code>AVISTREAMHEADER</code>结构的<code>dwFlags</code>成员中设置<code>AVISF_VIDEO_PALCHANGES</code>标志。<code>文本流</code>可以使用<code>任意Two-Character Code</code>。</p>
+<p>&emsp;&emsp;<strong><code>AVIPALCHANGE</code></strong>结构体定义了AVI文件中的<code>调色板更换</code>的相关信息。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    BYTE         bFirstEntry;</span><br><span class="line">    BYTE         bNumEntries;</span><br><span class="line">    WORD         wFlags;</span><br><span class="line">    PALETTEENTRY peNew[];</span><br><span class="line">&#125; AVIPALCHANGE;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">tagPALETTEENTRY</span> &#123;</span></span><br><span class="line">    BYTE peRed;</span><br><span class="line">    BYTE peGreen;</span><br><span class="line">    BYTE peBlue;</span><br><span class="line">    BYTE peFlags;</span><br><span class="line">&#125; PALETTEENTRY;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">tagLOGPALETTE</span> &#123;</span></span><br><span class="line">    WORD         palVersion;</span><br><span class="line">    WORD         palNumEntries;</span><br><span class="line">    PALETTEENTRY palPalEntry[<span class="number">1</span>];</span><br><span class="line">&#125; LOGPALETTE;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><strong><code>bFirstEntry</code></strong>: 指定要更改的<code>第一个调色板条目</code>的索引。</li>
+<li><strong><code>bNumEntries</code></strong>: 指定要更改的<code>调色板条目数</code>，或者<code>指定零</code>以更改<code>所有256个</code>调色板条目。</li>
+<li><strong><code>wFlags</code></strong>: 保留。</li>
+<li><strong><code>peNew</code></strong>: 指定大小为<code>bNumEntries</code>的<code>PALETTEENTRY</code>结构的数组。</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;<strong><code>PALETTEENTRY</code></strong>结构指定<code>逻辑调色板</code>中条目的<code>颜色</code>和<code>用法</code>。逻辑调色板由<code>LOGPALETTE</code>结构定义。</p>
+<blockquote>
+<ul>
+<li><strong><code>peRed</code></strong>: 调色板条目的<code>红色</code>强度值。</li>
+<li><strong><code>peGreen</code></strong>: 调色板条目的<code>绿色</code>强度值。</li>
+<li><strong><code>peBlue</code></strong>: 调色板条目的<code>蓝色</code>强度值。</li>
+<li><strong><code>peFlags</code></strong>: 指示<code>如何使用</code>调色板条目。</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;<strong><code>peFlags</code></strong>可以设置为<code>0</code>或<code>以下值之一</code>。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Value</th>
+<th style="text-align:left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">PC_EXPLICIT</td>
+<td style="text-align:left">说明逻辑调色板条目的低位字指定的是硬件调色板索引。该标志允许应用程序显示显示设备面板的内容。</td>
+</tr>
+<tr>
+<td style="text-align:left">PC_NOCOLLAPSE</td>
+<td style="text-align:left">说明将颜色放置在系统调色板中的未使用条目中，而不是与系统调色板中的现有颜色匹配的条目中。如果系统调色板中没有未使用的条目，则颜色将正常匹配。一旦此颜色出现在系统调色板中，其他逻辑调色板中的颜色就可以与此颜色匹配。</td>
+</tr>
+<tr>
+<td style="text-align:left">PC_RESERVED</td>
+<td style="text-align:left">说明将逻辑调色板条目用于调色板动画。该标志可防止其他窗口将颜色与调色板条目匹配，因为颜色经常变化。如果有未使用的系统调色板条目可用，则将颜色放置在该条目中。否则，该颜色不可用于动画。</td>
+</tr>
+</tbody>
+</table>
+<p>&emsp;&emsp;<strong><code>LOGPALETTE</code></strong>结构定义了一个<code>逻辑调色板</code>。</p>
+<blockquote>
+<ul>
+<li><strong><code>palVersion</code></strong>: 系统的<code>版本号</code>。</li>
+<li><strong><code>palNumEntries</code></strong>: 逻辑面板中<code>条目的数量</code>。</li>
+<li><strong><code>palPalEntry</code></strong>: 指定一组<code>PALETTEENTRY</code>结构，这些结构定义<code>逻辑调色板</code>中每个条目的<code>颜色</code>和<code>用法</code>。</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;<code>调色板条目表</code>中的颜色应按<code>重要性顺序</code>显示，因为<code>逻辑调色板</code>中<code>较前的条目</code>最有可能放置在<code>系统调色板</code>中。</p>
+<h3 id="2-5、idx1-Chunk"><a href="#2-5、idx1-Chunk" class="headerlink" title="2.5、idx1 Chunk"></a>2.5、idx1 Chunk</h3><h4 id="2-5-1、AVI-1-0-index"><a href="#2-5-1、AVI-1-0-index" class="headerlink" title="2.5.1、AVI 1.0 index"></a>2.5.1、AVI 1.0 index</h4><p>&emsp;&emsp;<strong><code>可选索引块(“idx1”)</code></strong>可以位于<code>“movi”</code>列表之后。<code>索引</code>包含数据块及其<code>在文件中的位置</code>的<code>列表</code>。它由一个<strong><code>AVIOLDINDEX</code></strong>结构组成，该结构具有<code>每个数据块</code>的条目(包括<code>“rec”块</code>)。如果文件<code>包含索引</code>，请在<code>AVIMAINHEADER</code>结构的<code>dwFlags</code>成员中设置<code>AVIF_HASINDEX</code>标志。</p>
+<p>&emsp;&emsp;<code>AVIOLDINDEX</code>结构由<code>初始RIFF块</code>(Chunk结构体:fcc和cb成员)和<code>“movi”</code>列表中<code>每个数据块</code>的一个<code>索引条目</code>组成。<strong><code>AVIOLDINDEX</code></strong>结构体的定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">avioldindex</span> &#123;</span></span><br><span class="line">    FOURCC  fcc;</span><br><span class="line">    DWORD   cb;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">        DWORD dwChunkId;</span><br><span class="line">        DWORD dwFlags;</span><br><span class="line">        DWORD dwOffset;</span><br><span class="line">        DWORD dwSize;</span><br><span class="line">    &#125; _avioldindex_entry;</span><br><span class="line">    _avioldindex_entry aIndex[];</span><br><span class="line">&#125; AVIOLDINDEX;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><strong><code>fcc</code></strong>: 指定<code>FourCC</code>代码。必须为<code>“idx1”</code>。</li>
+<li><strong><code>cb</code></strong>: 指定<code>本结构体的大小</code>，与<code>Chunk</code>结构体中的<code>dwSize</code>相同。不包括初始的<code>8个字节</code>(fcc和cb)。</li>
+<li><strong><code>aIndex</code></strong>: 包含下列成员的结构体的数组。<ul>
+<li><strong><code>dwChunkId</code></strong>: 指定用于标识AVI文件中<code>流的FourCC</code>。<code>FourCC</code>的格式必须为<code>“xxyy”</code>，其中<code>xx</code>是<code>流编号</code>，而<code>yy</code>是两个字符的代码，用于标识<code>流的内容</code>。请看前面介绍<code>“movi List”</code>时的内容。</li>
+<li><strong><code>dwFlags</code></strong>: 请看下文。</li>
+<li><strong><code>dwOffset</code></strong>: 指定数据块<code>在文件中的位置</code>。该值应指定为距<code>“movi”列表开头</code>的<code>偏移量</code>(以<code>字节</code>为单位)；但是，在某些AVI文件中，它是距<code>文件开头</code>的<code>偏移量</code>。<code>AVI文件解析器</code>必须能够处理<code>两个版本</code>。</li>
+<li><strong><code>dwSize</code></strong>: 指定<code>数据块的大小</code>，以<code>字节</code>为单位。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;<strong><code>dwFlags</code></strong>指定以下标志的<code>0个</code>或<code>多个</code>的<code>按位组合</code>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Value</th>
+<th style="text-align:left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">AVIIF_KEYFRAME</td>
+<td style="text-align:left">此条目所指的数据块是关键帧。</td>
+</tr>
+<tr>
+<td style="text-align:left">AVIIF_LIST</td>
+<td style="text-align:left">此条目所指的数据块是一个“rec”列表。不是一个Chunk。</td>
+</tr>
+<tr>
+<td style="text-align:left">AVIIF_FIRSTPART</td>
+<td style="text-align:left">此条目所指的数据块需要使用其后的帧；它不能单独存在。</td>
+</tr>
+<tr>
+<td style="text-align:left">AVIIF_LASTPART</td>
+<td style="text-align:left">此条目所指的数据块需要使用其之前的帧；它不能单独存在。</td>
+</tr>
+<tr>
+<td style="text-align:left">AVIIF_NO_TIME</td>
+<td style="text-align:left">此条目所指的数据块不影响流的计时。例如，应该为调色板更换数据块(“..pc”)设置这个标志。</td>
+</tr>
+</tbody>
+</table>
+<p>&emsp;&emsp;如果既未设置<code>AVIIF_FIRSTPART</code>也未设置<code>AVIIF_LASTPART</code>，则该块可以<code>单独使用</code>，换句话说，其相应的流<code>至少有一个数据包</code>。这对于将<code>VBR音频流</code>存储在AVI文件中非常重要。</p>
+<p>&emsp;&emsp;<strong><code>“idx1 Chunk”</code></strong>的标准形式示意图：</p>
+<div align="left"><img src="/resources/2020/AVI_Format/idx1 Chunk.png" width="70%" height="50%" alt="idx1 Chunk标准形式"></div>
+
+
+<h4 id="2-5-2、AVI-2-0-index-Open-DML"><a href="#2-5-2、AVI-2-0-index-Open-DML" class="headerlink" title="2.5.2、AVI 2.0 index(Open-DML)"></a>2.5.2、AVI 2.0 index(Open-DML)</h4><p>&emsp;&emsp;<strong><code>AVI2.0索引</code></strong>可以显示为<code>单个块(“idx1”)</code>。或者，可以在<code>“movi”</code>块中插入<code>索引段(“ix..”)</code>。如果将<code>索引段(“ix..”)</code>放置在<code>“movi”</code>块中，则<code>超级索引</code>(“Super Index Chunk”或“indx Chunk”)包含<code>索引段(“ix..”)的索引</code>。<code>AVIMETAINDEX</code>结构是<code>索引段(“ix..”)</code>和<code>超级索引(“indx”)</code>的基础结构。</p>
+<p>&emsp;&emsp;<code>AVIMETAINDEX</code>结构体是<code>AVI2.0索引</code>的基本结构(<code>“indx”</code>格式)。<strong><code>AVIMETAINDEX</code></strong>结构体的定义如下(可参考<code>“indx Chunk”</code>节)：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">avimetaindex</span> &#123;</span></span><br><span class="line">    FOURCC fcc;</span><br><span class="line">    UINT   cb;</span><br><span class="line">    WORD   wLongsPerEntry;</span><br><span class="line">    BYTE   bIndexSubType;</span><br><span class="line">    BYTE   bIndexType;</span><br><span class="line">    DWORD  nEntriesInUse;</span><br><span class="line">    DWORD  dwChunkId;</span><br><span class="line">    DWORD  dwReserved[<span class="number">3</span>];</span><br><span class="line">    DWORD  adwIndex[];</span><br><span class="line">&#125; AVIMETAINDEX;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><strong><code>fcc</code></strong>: <code>FourCC</code>代码。取值为<code>“indx”</code>或<code>“ix..”</code>，其中<code>“..”</code>是<code>流编号</code>。</li>
+<li><strong><code>cb</code></strong>: 指示<code>此结构体的大小</code>，不包括初始的<code>8个字节</code>(fcc和cb)。</li>
+<li><strong><code>wLongsPerEntry</code></strong>: 每个<code>索引项的大小</code>，以<code>4字节</code>为单位。</li>
+<li><strong><code>bIndexSubType</code></strong>: <code>索引子类型</code>。含义取决于<code>bIndexType</code>的值。</li>
+<li><strong><code>bIndexType</code></strong>: 请看下文。</li>
+<li><strong><code>nEntriesInUse</code></strong>: adwIndex数组中<code>有效的条目数</code>。</li>
+<li><strong><code>dwChunkId</code></strong>: 标识<code>被索引</code>的对象的<code>FourCC</code>。如果<code>索引的对象</code>是一个<code>流</code>，则该成员与<code>AVIOLDINDEX</code>结构的<code>dwChunkId</code>成员具有<code>相同的含义</code>。</li>
+<li><strong><code>dwReserved</code></strong>: 该成员的含义取决于<code>索引类型</code>。</li>
+<li><strong><code>adwIndex</code></strong>: <code>索引项的数组</code>。该数据的格式取决于<code>索引类型</code>。</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;<strong><code>bIndexType</code></strong>可以具有以下值：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Value</th>
+<th style="text-align:left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">AVI_INDEX_OF_INDEXES <br> 0x00</td>
+<td style="text-align:left">每个索引条目都指向另一个索引。将AVIMETAINDEX结构视为AVISUPERINDEX结构。bIndexSubType的值必须为0。</td>
+</tr>
+<tr>
+<td style="text-align:left">AVI_INDEX_OF_CHUNKS <br> 0x01</td>
+<td style="text-align:left">每个索引条目指向文件中的一个数据块。<br> 1、如果bIndexSubType为0，将AVIMETAINDEX结构视为AVISTDINDEX结构。每个索引条目都是一个AVISTDINDEX_ENTRY结构。<br> 2、如果bIndexSubType为AVI_INDEX_SUB_2FIELD，则该索引是一个域索引块(Field Index)。<br> DirectShow不支持域索引(Field Index)。</td>
+</tr>
+<tr>
+<td style="text-align:left">AVI_INDEX_IS_DATA <br> 0x80</td>
+<td style="text-align:left">adwIndex数组包含一个数据表，而不是一个索引项列表。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-6、JUNK-Chunk"><a href="#2-6、JUNK-Chunk" class="headerlink" title="2.6、JUNK Chunk"></a>2.6、JUNK Chunk</h3><p>&emsp;&emsp;根据需要插入<strong><code>“JUNK”</code></strong>块，可以在AVI文件中<code>对齐数据</code>。应用程序应<code>忽略“JUNK”块</code>的内容。</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><blockquote>
+<ul>
+<li>1.<a href="https://cdn.hackaday.io/files/274271173436768/avi.pdf" target="_blank" rel="noopener">PDF - AVI File Format Documentation v1.0</a></li>
+<li>2.<a href="https://web.archive.org/web/20070112225112/http://www.the-labs.com/Video/odmlff2-avidef.pdf" target="_blank" rel="noopener">PDF - OpenDML AVI File Format Extensions v1.02</a></li>
+<li>3.<a href="https://docs.microsoft.com/zh-cn/windows/win32/directshow/avi-file-format" target="_blank" rel="noopener">Microsoft - AVI File Format</a></li>
+<li>4.<a href="https://en.wikipedia.org/wiki/Audio_Video_Interleave" target="_blank" rel="noopener">WikiPedia - Audio Video Interleave</a></li>
+<li>5.<a href="https://baike.baidu.com/item/RIFF/20811305" target="_blank" rel="noopener">riff(WINDOWS文件格式)</a></li>
+<li>6.<a href="https://blog.csdn.net/chenyonken/article/details/79174500" target="_blank" rel="noopener">CSDN - AVI文件格式详解</a></li>
+<li>7.<a href="https://blog.jianchihu.net/avi-file-parse.html" target="_blank" rel="noopener">剑痴乎 - AVI文件详细解析</a></li>
+<li>8.<a href="https://zhuanlan.zhihu.com/p/162679898" target="_blank" rel="noopener">知乎 - 音视频编解码–AVI格式</a></li>
+<li>9.<a href="https://www.cnblogs.com/wangguchangqing/p/5957531.html" target="_blank" rel="noopener">RIFF和WAVE音频文件格式</a></li>
+</ul>
+</blockquote>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2020/12/30/AVI文件格式分析/">AVI文件格式分析</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 Sp4n9x 的个人博客">Sp4n9x</a></p>
+        <p><span>发布时间:</span>2020-12-30, 00:00</p>
+        <p><span>最后更新:</span>2021-01-05, 15:21</p>
+        
+            <p>
+                <span>更新历史:</span><i class="fa fa-github"></i>
+                <a href="https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2020-12-30.AVI文件格式分析.md" title="顺序查看文章各部分修改记录" target = "_blank">Blame</a>,
+                <a href="https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2020-12-30.AVI文件格式分析.md" title="查看文章有关更新记录" target = "_blank">History</a><span class="raw">文本模式:</span><i class="fa fa-file-text-o"></i>
+                <a href="https://raw.githubusercontent.com/Sp4n9x/blog_backup/blob/master/_posts/2020-12-30.AVI文件格式分析.md" title="查看 & 下载文章 Markdown 原始文本" target = "_blank"> .md Raw</a>
+            </p>
+        
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2020/12/30/AVI文件格式分析/" title="AVI文件格式分析">http://sp4n9x.github.io/2020/12/30/AVI文件格式分析/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://sp4n9x.github.io/2020/12/30/AVI文件格式分析/　　作者: Sp4n9x" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+    
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2021/01/10/CVE-2010-2553复现与分析/">
+                    CVE-2010-2553复现与分析
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2020/12/20/CVE-2010-3333复现与分析/">
+                    CVE-2010-3333复现与分析
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+
+
+
+
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1、AVI简介"><span class="toc-text">1、AVI简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1、AVI基本概念"><span class="toc-text">1.1、AVI基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2、AVI文件类型"><span class="toc-text">1.2、AVI文件类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3、基本数据结构"><span class="toc-text">1.3、基本数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-1、RIFF文件的基本数据结构"><span class="toc-text">1.3.1、RIFF文件的基本数据结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-2、AVI文件的基本数据结构"><span class="toc-text">1.3.2、AVI文件的基本数据结构</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2、AVI文件结构"><span class="toc-text">2、AVI文件结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1、AVI文件整体布局"><span class="toc-text">2.1、AVI文件整体布局</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2、hdrl-List-Headerlist"><span class="toc-text">2.2、hdrl List(Headerlist)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1、avih-Chunk-AVI-Header"><span class="toc-text">2.2.1、avih Chunk(AVI Header)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2、strl-List-Stream-Header-List"><span class="toc-text">2.2.2、strl List(Stream Header List)</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-2-1、strh-Chunk-Stream-Header"><span class="toc-text">2.2.2.1、strh Chunk(Stream Header)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-2-2、strf-Chunk-Stream-Format"><span class="toc-text">2.2.2.2、strf Chunk(Stream Format)</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#视频流-BITMAPINFO"><span class="toc-text">视频流(BITMAPINFO)</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#音频流-WAVEFORMATEX"><span class="toc-text">音频流(WAVEFORMATEX)</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-2-3、strd-Chunk-Stream-Header-Data-Additional-Header-Data"><span class="toc-text">2.2.2.3、strd Chunk(Stream Header Data / Additional Header Data)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-2-4、strn-Chunk-Stream-Name"><span class="toc-text">2.2.2.4、strn Chunk(Stream Name)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-2-5、indx-Chunk-Super-Index-Chunk"><span class="toc-text">2.2.2.5、indx Chunk(Super Index Chunk)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3、INFO-List"><span class="toc-text">2.3、INFO List</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4、movi-List"><span class="toc-text">2.4、movi List</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5、idx1-Chunk"><span class="toc-text">2.5、idx1 Chunk</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-1、AVI-1-0-index"><span class="toc-text">2.5.1、AVI 1.0 index</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-2、AVI-2-0-index-Open-DML"><span class="toc-text">2.5.2、AVI 2.0 index(Open-DML)</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6、JUNK-Chunk"><span class="toc-text">2.6、JUNK Chunk</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reference"><span class="toc-text">Reference</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-6 i,
+        .toc-level-6 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"true"];
+    </script>
+
+
+
+    
+    <div class="share">
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"AVI文件格式分析　| Sp4n9x's Blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    </div>
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function () {
+            this.page.url = 'http://sp4n9x.github.io/2020/12/30/AVI文件格式分析/';
+            this.page.identifier = '2020/12/30/AVI文件格式分析/';
+        };
+        var loadComment = function() {
+            var d = document, s = d.createElement('script');
+            s.src = '//Sp4n9x.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+<script id="dsq-count-scr" src="//Sp4n9x.disqus.com/count.js" async></script>
+<span class="disqus-comment-count" data-disqus-identifier="2020/12/30/AVI文件格式分析/"></span>
+<span class="disqus-comment-count" data-disqus-url="http://sp4n9x.github.io/2020/12/30/AVI文件格式分析/"></span>
+<script>
+    $(".disqus-comment-count").hide();
+    var $disqusCount = $(".disqus-comment-count");
+    $disqusCount.bind("DOMNodeInserted", function(e) {
+        $(".count-comment").text(
+            $(this).text().replace(/[^0-9]/ig,"")
+        )
+        DISQUSWIDGETS.getCount({reset: true});
+    })
+</script>
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2021/01/10/CVE-2010-2553复现与分析/" title="上一篇: CVE-2010-2553复现与分析">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2020/12/20/CVE-2010-3333复现与分析/" title="下一篇: CVE-2010-3333复现与分析">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/01/10/CVE-2010-2553复现与分析/">CVE-2010-2553复现与分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/12/30/AVI文件格式分析/">AVI文件格式分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/12/20/CVE-2010-3333复现与分析/">CVE-2010-3333复现与分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/08/15/ret2_dl_runtime_resolve详解/">ret2_dl_runtime_resolve详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/19/RCTF2015——WriteUp(Pwn)/">RCTF2015——WriteUp(Pwn)</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/05/ZCTF2016——WriteUp(Pwn)/">ZCTF2016——WriteUp(Pwn)</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/08/ZIP文件格式分析/">ZIP文件格式分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/10/RAR文件格式分析/">RAR文件格式分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/">OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/26/护网杯2018——WriteUp/">护网杯2018——WriteUp</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/01/CVE-2010-2883复现与分析/">CVE-2010-2883复现与分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/27/redhat2018—writeup/">redhat2018—writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/11/一步一步学ROP之Linux_x64篇-蒸米/">一步一步学ROP之Linux_x64篇-蒸米</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/10/一步一步学ROP之Linux_x86篇-蒸米/">一步一步学ROP之Linux_x86篇-蒸米</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/08/Kali2018-搜狗输入法安装/">Kali2018-搜狗输入法安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/05/Pwn环境搭建-Ubuntu16.04/">Pwn环境搭建——Ubuntu16.04</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/23/pwnable.kr/">pwnable.kr</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/27/MySQL宽字节注入/">MySQL宽字节注入</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/15/实验吧Wirteup合集/">实验吧WriteUp合集</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018-2021 Sp4n9x
+            </div>
+            <div class="footer-right">
+                <span> Sp4n9x's Blog <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+    </div>
+</footer>
+    </div>
+    
+    <script src="/js/GithubRepoWidget.js"></script>
+
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 10;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+             github: ".github-widget a", 
+            
+             post: ".article-entry a[href]", 
+             tags: ".article-tag a", 
+             categories: ".article-category a, a.tag-list-link", 
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+    <!-- 点击爱心效果 -->
+    <script src="/js/love.js"></script>
+  </div>
+</body>
+</html>
