@@ -18,19 +18,19 @@
 
 
 
-<meta name="description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;——当你的才华还配不上你的野心时，请静下来好好努力！">
+<meta name="description" content="因为接下来要分析的漏洞CVE-2010-2553，涉及到AVI文件格式所以，有必要详细了解一下AVI文件格式，这样，才能知道怎样构造出能达到漏洞利用的样本&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;e">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AVI文件格式分析">
 <meta property="og:url" content="http://sp4n9x.github.io/2020/12/30/AVI文件格式分析/index.html">
 <meta property="og:site_name" content="Sp4n9x&#39;s Blog">
-<meta property="og:description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;——当你的才华还配不上你的野心时，请静下来好好努力！">
+<meta property="og:description" content="因为接下来要分析的漏洞CVE-2010-2553，涉及到AVI文件格式所以，有必要详细了解一下AVI文件格式，这样，才能知道怎样构造出能达到漏洞利用的样本&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;e">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://sp4n9x.github.io/resources/2020/AVI_Format/Super%20Index%20Chunk.png">
 <meta property="og:image" content="http://sp4n9x.github.io/resources/2020/AVI_Format/idx1%20Chunk.png">
-<meta property="og:updated_time" content="2021-01-05T07:21:33.998Z">
+<meta property="og:updated_time" content="2021-02-16T13:55:15.490Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="AVI文件格式分析">
-<meta name="twitter:description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;——当你的才华还配不上你的野心时，请静下来好好努力！">
+<meta name="twitter:description" content="因为接下来要分析的漏洞CVE-2010-2553，涉及到AVI文件格式所以，有必要详细了解一下AVI文件格式，这样，才能知道怎样构造出能达到漏洞利用的样本&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;e">
 <meta name="twitter:image" content="http://sp4n9x.github.io/resources/2020/AVI_Format/Super%20Index%20Chunk.png">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
@@ -333,7 +333,7 @@
       
           
         <blockquote>
-<p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;——当你的才华还配不上你的野心时，请静下来好好努力！<br><a id="more"></a></p>
+<p>因为接下来要分析的漏洞CVE-2010-2553，涉及到AVI文件格式<br>所以，有必要详细了解一下AVI文件格式，这样，才能知道怎样构造出能达到漏洞利用的样本<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;——当你的才华还配不上你的野心时，请静下来好好努力！<br><a id="more"></a></p>
 </blockquote>
 <h2 id="1、AVI简介"><a href="#1、AVI简介" class="headerlink" title="1、AVI简介"></a>1、AVI简介</h2><h3 id="1-1、AVI基本概念"><a href="#1-1、AVI基本概念" class="headerlink" title="1.1、AVI基本概念"></a>1.1、AVI基本概念</h3><p>&emsp;&emsp;<code>AVI</code>是音频视频交错(<code>Audio Video Interleaved</code>)的缩写，它是<code>Microsoft</code>于1992年11月开发的一种符合<code>RIFF文件规范</code>的多媒体容器格式，作为其<code>Windows视频软件</code>的一部分。<code>AVI文件</code>可以在<code>文件容器</code>中同时包含<code>音频</code>和<code>视频</code>数据，该文件容器允许<code>同步播放</code>音频和视频。</p>
 <p>&emsp;&emsp;许多<code>AVI文件</code>使用1996年2月由<code>Matrox OpenDML组</code>开发的文件格式扩展名。这些文件受<code>Microsoft</code>支持，并且被非正式地称为<code>“AVI 2.0”</code>。2010年，<code>美国政府</code>的<code>国家档案</code>和<code>记录管理局</code>将AVI定义为<code>官方文件格式</code>，用于保存<code>数字视频</code>。</p>
@@ -1063,7 +1063,7 @@
         <p><span>本文标题:</span><a href="/2020/12/30/AVI文件格式分析/">AVI文件格式分析</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 Sp4n9x 的个人博客">Sp4n9x</a></p>
         <p><span>发布时间:</span>2020-12-30, 00:00</p>
-        <p><span>最后更新:</span>2021-01-05, 15:21</p>
+        <p><span>最后更新:</span>2021-02-16, 21:55</p>
         
             <p>
                 <span>更新历史:</span><i class="fa fa-github"></i>
