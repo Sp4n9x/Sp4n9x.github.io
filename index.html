@@ -219,7 +219,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AVI/">AVI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adobe-Reader/">Adobe Reader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF/">CTF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cinepak/">Cinepak</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DNS隐蔽信道通信/">DNS隐蔽信道通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FileFormat/">FileFormat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Got表覆写/">Got表覆写</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heap-Overflow/">Heap Overflow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kali/">Kali</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microsoft-Office/">Microsoft Office</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pdf/">Pdf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pwn/">Pwn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ROP/">ROP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rtf/">Rtf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SEH/">SEH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL注入/">SQL注入</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Stack-Overflow/">Stack Overflow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AVI/">AVI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adobe-Reader/">Adobe Reader</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF/">CTF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cinepak/">Cinepak</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DNS隐蔽信道通信/">DNS隐蔽信道通信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ELF/">ELF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FileFormat/">FileFormat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Got表覆写/">Got表覆写</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heap/">Heap</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heap-Overflow/">Heap Overflow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kali/">Kali</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LFH/">LFH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microsoft-Office/">Microsoft Office</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PEB/">PEB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pdf/">Pdf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pwn/">Pwn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ROP/">ROP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rtf/">Rtf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SEH/">SEH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL注入/">SQL注入</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Stack-Overflow/">Stack Overflow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TEB/">TEB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
                     </div>
                 </section>
                 
@@ -392,6 +392,366 @@
 
 
   
+    <article id="post-ELF_FileFormat_Analysis" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2021/05/27/ELF_FileFormat_Analysis/" class="article-date">
+      <time datetime="2021-05-26T16:00:00.000Z" itemprop="datePublished">2021-05-27</time>
+</a>
+
+ 
+    <a href="/2021/05/27/ELF_FileFormat_Analysis/#comments" title="查看评论">
+        <i class="fa fa-comments-o" aria-hidden="true"></i>
+        <span class="count-comment"></span>
+        
+        
+            <span class="disqus-comment-count" data-disqus-identifier="2021/05/27/ELF_FileFormat_Analysis/"></span>
+        
+    </a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/05/27/ELF_FileFormat_Analysis/">ELF文件格式分析</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+          
+              <blockquote>
+<p>1、这篇文章是对ELF文件的一个比较完整的总结。<br>2、部分未写完，有时间再来补。<br>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/FileFormat/">FileFormat</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ELF/">ELF</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a  href="/2021/05/27/ELF_FileFormat_Analysis/#more">ReadMore >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+    <style>
+        #post-blog-building .article-tag {
+            display: none;
+        }
+    </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-TEB_and_PEB" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2021/04/14/TEB_and_PEB/" class="article-date">
+      <time datetime="2021-04-13T16:00:00.000Z" itemprop="datePublished">2021-04-14</time>
+</a>
+
+ 
+    <a href="/2021/04/14/TEB_and_PEB/#comments" title="查看评论">
+        <i class="fa fa-comments-o" aria-hidden="true"></i>
+        <span class="count-comment"></span>
+        
+        
+            <span class="disqus-comment-count" data-disqus-identifier="2021/04/14/TEB_and_PEB/"></span>
+        
+    </a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/04/14/TEB_and_PEB/">TEB和PEB</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+          
+              <blockquote>
+<p>1、这篇文章主要对Windows XP SP3和Windows 7 SP1中的TEB和PEB结构进行对比分析。<br>2、当时对Windows 7下的堆管理算法逆向的时候，涉及到TEB和PEB中的某些结构，所以做了一下总结。<br>3、还没总结完，主要是太费时间了，一些结构可能暂时用不到，后续接触到的时候再补充。<br>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Windows-Internals/">Windows Internals</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PEB/">PEB</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TEB/">TEB</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a  href="/2021/04/14/TEB_and_PEB/#more">ReadMore >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+    <style>
+        #post-blog-building .article-tag {
+            display: none;
+        }
+    </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-BlackHat USA 2010 - Understanding the Low Fragmentation Heap" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2021/03/22/BlackHat USA 2010 - Understanding the Low Fragmentation Heap/" class="article-date">
+      <time datetime="2021-03-21T16:00:00.000Z" itemprop="datePublished">2021-03-22</time>
+</a>
+
+ 
+    <a href="/2021/03/22/BlackHat USA 2010 - Understanding the Low Fragmentation Heap/#comments" title="查看评论">
+        <i class="fa fa-comments-o" aria-hidden="true"></i>
+        <span class="count-comment"></span>
+        
+        
+            <span class="disqus-comment-count" data-disqus-identifier="2021/03/22/BlackHat USA 2010 - Understanding the Low Fragmentation Heap/"></span>
+        
+    </a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/03/22/BlackHat USA 2010 - Understanding the Low Fragmentation Heap/">翻译 - BlackHat USA 2010 - Understanding the Low Fragmentation Heap</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+          
+              <blockquote>
+<p>1、这篇文章是对BlackHat USA 2010上Chris Valasek的议题《Understanding the Low Fragmentation Heap》的翻译。<br>2、在我分析CVE-2012-1876的过程中，对漏洞利用部分的堆布局不是很懂，所以找到了这篇文章进行翻译，以更好地理解漏洞利用中的堆布局。<br>3、LFH(Low Fragmentation Heap)是在Windows Vista版本中引入的。<br>4、本文是基于32位Windows 7 RTM版本的ntdll.dll(6.1.7600.16385)来进行分析LFH的结构的。<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;——当你的才华还配不上你的野心时，请静下来好好努力！<br>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/翻译/">翻译</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Heap/">Heap</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LFH/">LFH</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a  href="/2021/03/22/BlackHat USA 2010 - Understanding the Low Fragmentation Heap/#more">ReadMore >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+    <style>
+        #post-blog-building .article-tag {
+            display: none;
+        }
+    </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-CVE-2012-1876复现与分析" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2021/02/16/CVE-2012-1876复现与分析/" class="article-date">
+      <time datetime="2021-02-15T16:00:00.000Z" itemprop="datePublished">2021-02-16</time>
+</a>
+
+ 
+    <a href="/2021/02/16/CVE-2012-1876复现与分析/#comments" title="查看评论">
+        <i class="fa fa-comments-o" aria-hidden="true"></i>
+        <span class="count-comment"></span>
+        
+        
+            <span class="disqus-comment-count" data-disqus-identifier="2021/02/16/CVE-2012-1876复现与分析/"></span>
+        
+    </a>
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/02/16/CVE-2012-1876复现与分析/">CVE-2012-1876复现与分析</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+          
+              <blockquote>
+<p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;——当你的才华还配不上你的野心时，请静下来好好努力！<br>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/CVE/">CVE</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/">Windows</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a  href="/2021/02/16/CVE-2012-1876复现与分析/#more">ReadMore >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+    <style>
+        #post-blog-building .article-tag {
+            display: none;
+        }
+    </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-CVE-2010-2553复现与分析" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -522,7 +882,7 @@
       
           
               <blockquote>
-<p>因为接下来要分析的漏洞CVE-2010-2553，涉及到AVI文件格式<br>所以，有必要详细了解一下AVI文件格式，这样，才能知道怎样构造出能达到漏洞利用的样本<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;——当你的才华还配不上你的野心时，请静下来好好努力！<br>
+<p>因为接下来要分析的漏洞CVE-2010-2553，涉及到AVI文件格式。<br>所以，有必要详细了解一下AVI文件格式，这样，才能知道怎样构造出能达到漏洞利用的样本。<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;——当你的才华还配不上你的野心时，请静下来好好努力！<br>
           
       
     </div>
@@ -838,361 +1198,9 @@
 
 
   
-    <article id="post-ZCTF2016——WriteUp(Pwn)" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2020/07/05/ZCTF2016——WriteUp(Pwn)/" class="article-date">
-      <time datetime="2020-07-04T16:00:00.000Z" itemprop="datePublished">2020-07-05</time>
-</a>
-
- 
-    <a href="/2020/07/05/ZCTF2016——WriteUp(Pwn)/#comments" title="查看评论">
-        <i class="fa fa-comments-o" aria-hidden="true"></i>
-        <span class="count-comment"></span>
-        
-        
-            <span class="disqus-comment-count" data-disqus-identifier="2020/07/05/ZCTF2016——WriteUp(Pwn)/"></span>
-        
-    </a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/07/05/ZCTF2016——WriteUp(Pwn)/">ZCTF2016——WriteUp(Pwn)</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-          
-              <blockquote>
-<p>ZCTF2016 Pwn题题解<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;——当你的才华还配不上你的野心时，请静下来好好努力！<br>
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/WriteUp/">WriteUp</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CTF/">CTF</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pwn/">Pwn</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a  href="/2020/07/05/ZCTF2016——WriteUp(Pwn)/#more">ReadMore >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-    <style>
-        #post-blog-building .article-tag {
-            display: none;
-        }
-    </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-ZIP文件格式分析" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2020/05/08/ZIP文件格式分析/" class="article-date">
-      <time datetime="2020-05-07T16:00:00.000Z" itemprop="datePublished">2020-05-08</time>
-</a>
-
- 
-    <a href="/2020/05/08/ZIP文件格式分析/#comments" title="查看评论">
-        <i class="fa fa-comments-o" aria-hidden="true"></i>
-        <span class="count-comment"></span>
-        
-        
-            <span class="disqus-comment-count" data-disqus-identifier="2020/05/08/ZIP文件格式分析/"></span>
-        
-    </a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/05/08/ZIP文件格式分析/">ZIP文件格式分析</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-          
-              <blockquote>
-<p>ZIP文件格式分析<br>刚分析完RAR文件格式，一想，干脆把ZIP文件格式也分析了吧<br>不过ZIP文件格式有官方文档，比较详细，这里也就是理解加翻译了一下。英文不好，菜哭。<br>后面有时间会加入实例分析环节。<br>
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/FileFormat/">FileFormat</a>
-    </div>
-
-
-      
-      
-        <p class="article-more-link">
-          <a  href="/2020/05/08/ZIP文件格式分析/#more">ReadMore >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-    <style>
-        #post-blog-building .article-tag {
-            display: none;
-        }
-    </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-RAR文件格式分析" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2020/04/10/RAR文件格式分析/" class="article-date">
-      <time datetime="2020-04-09T16:00:00.000Z" itemprop="datePublished">2020-04-10</time>
-</a>
-
- 
-    <a href="/2020/04/10/RAR文件格式分析/#comments" title="查看评论">
-        <i class="fa fa-comments-o" aria-hidden="true"></i>
-        <span class="count-comment"></span>
-        
-        
-            <span class="disqus-comment-count" data-disqus-identifier="2020/04/10/RAR文件格式分析/"></span>
-        
-    </a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/10/RAR文件格式分析/">RAR文件格式分析</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-          
-              <blockquote>
-<p>RAR文件格式分析<br>突然心血来潮，分析了一下这个格式，在家无法专心学习，一篇文章拖了挺长时间。<br>对RAR文件格式的细节有了更深刻的了解。<br>
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/FileFormat/">FileFormat</a>
-    </div>
-
-
-      
-      
-        <p class="article-more-link">
-          <a  href="/2020/04/10/RAR文件格式分析/#more">ReadMore >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-    <style>
-        #post-blog-building .article-tag {
-            display: none;
-        }
-    </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/" class="article-date">
-      <time datetime="2019-04-10T16:00:00.000Z" itemprop="datePublished">2019-04-11</time>
-</a>
-
- 
-    <a href="/2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/#comments" title="查看评论">
-        <i class="fa fa-comments-o" aria-hidden="true"></i>
-        <span class="count-comment"></span>
-        
-        
-            <span class="disqus-comment-count" data-disqus-identifier="2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/"></span>
-        
-    </a>
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/">OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-          
-              <blockquote>
-<p>一款使用DNS隐蔽信道通信的木马分析。<br>这是之前在公司实习的时候写的木马分析文章。<br>
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/恶意软件分析/">恶意软件分析</a>
-    </div>
-
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DNS隐蔽信道通信/">DNS隐蔽信道通信</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a  href="/2019/04/11/OilRig新型BondUpdater木马的DNS隐蔽隧道通信行为分析/#more">ReadMore >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-    <style>
-        #post-blog-building .article-tag {
-            display: none;
-        }
-    </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 </div>
